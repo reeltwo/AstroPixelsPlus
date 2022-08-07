@@ -249,6 +249,9 @@ WElement firmwareContents[] = {
     WFirmwareUpload("Reflash", "firmware"),
     WLabel("Current Firmware Build Date:", "label"),
     WLabel(__DATE__, "date"),
+#ifdef BUILD_VERSION
+    WHRef(BUILD_VERSION, "Sources"),
+#endif
     WButton("Clear Prefs", "clear", []() {
         DEBUG_PRINTLN("Clear all preference settings");
         preferences.clear();
