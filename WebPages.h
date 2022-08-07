@@ -24,6 +24,7 @@ WMenuData setupMenu[] = {
     { "Home", "/" },
     { "Marcduino", "/marcduino" },
     { "WiFi", "/wifi" },
+    { "Remote", "/remote" },
     { "Firmware", "/firmware" },
     { "Back", "/" }
 };
@@ -157,6 +158,8 @@ WElement logicsContents[] = {
     rseriesSVG
 };
 
+////////////////////////////////
+
 String swBaudRates[] = {
     "2400",
     "9600",
@@ -206,16 +209,19 @@ WElement marcduinoContents[] = {
     rseriesSVG
 };
 
+////////////////////////////////
+
 String wifiSSID;
 String wifiPass;
 bool wifiAP;
-bool wifiEnabled;
 
 WElement wifiContents[] = {
     W1("WiFi Setup"),
     WCheckbox("WiFi Enabled", "enabled",
-        []() { return (wifiEnabled = preferences.getBool(PREFERENCE_WIFI_ENABLED, WIFI_ENABLED)); },
-        [](bool val) { wifiEnabled = val; } ),
+        []() { return wifiEnabled; },
+        [](bool val) { wifiEnabled = val; if (wifiEnabled) remoteEnabled = false; } ),
+    WLabel("WiFi Disables Droid Remote", "label2"),
+    WHR(),
     WCheckbox("Access Point", "apmode",
         []() { return (wifiAP = preferences.getBool(PREFERENCE_WIFI_AP, WIFI_ACCESS_POINT)); },
         [](bool val) { wifiAP = val; } ),
@@ -225,23 +231,56 @@ WElement wifiContents[] = {
     WPassword("Password:", "password",
         []()->String { return (wifiPass = preferences.getString(PREFERENCE_WIFI_PASS, WIFI_AP_PASSPHRASE)); },
         [](String val) { wifiPass = val; } ),
+    WLabel("WiFi Disables Droid Remote", "label2"),
+    WHR(),
     WButton("Save", "save", []() {
         DEBUG_PRINTLN("WiFi Changed");
+        preferences.putBool(PREFERENCE_REMOTE_ENABLED, remoteEnabled);
         preferences.putBool(PREFERENCE_WIFI_ENABLED, wifiEnabled);
         preferences.putBool(PREFERENCE_WIFI_AP, wifiAP);
         preferences.putString(PREFERENCE_WIFI_SSID, wifiSSID);
         preferences.putString(PREFERENCE_WIFI_PASS, wifiPass);
-        DEBUG_PRINTLN("Restarting");
-        preferences.end();
-        ESP.restart();
+        reboot();
     }),
-    WHorizontalAlign(),
-    WButton("Back", "back", "/setup"),
     WHorizontalAlign(),
     WButton("Home", "home", "/"),
     WVerticalAlign(),
     rseriesSVG
 };
+
+////////////////////////////////
+
+String remoteHostName;
+String remoteSecret;
+
+WElement remoteContents[] = {
+    W1("Droid Remote Setup"),
+    WCheckbox("Droid Remote Enabled", "remoteenabled",
+        []() { return remoteEnabled; },
+        [](bool val) { remoteEnabled = val; if (remoteEnabled) wifiEnabled = false; } ),
+    WLabel("Droid Remote Disables WiFi", "label1"),
+    WHR(),
+    WTextField("Device Name:", "hostname",
+        []()->String { return (remoteHostName = preferences.getString(PREFERENCE_REMOTE_HOSTNAME, SMQ_HOSTNAME)); },
+        [](String val) { remoteHostName = val; } ),
+    WPassword("Secret:", "secret",
+        []()->String { return (remoteSecret = preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_SECRET)); },
+        [](String val) { remoteSecret = val; } ),
+    WButton("Save", "save", []() {
+        DEBUG_PRINTLN("Remote Changed");
+        preferences.putBool(PREFERENCE_REMOTE_ENABLED, remoteEnabled);
+        preferences.putBool(PREFERENCE_WIFI_ENABLED, wifiEnabled);
+        preferences.putString(PREFERENCE_REMOTE_HOSTNAME, remoteHostName);
+        preferences.putString(PREFERENCE_REMOTE_SECRET, remoteSecret);
+        reboot();
+    }),
+    WHorizontalAlign(),
+    WButton("Home", "home", "/"),
+    WVerticalAlign(),
+    rseriesSVG
+};
+
+////////////////////////////////
 
 WElement firmwareContents[] = {
     W1("Firmware Setup"),
@@ -255,12 +294,11 @@ WElement firmwareContents[] = {
     WButton("Clear Prefs", "clear", []() {
         DEBUG_PRINTLN("Clear all preference settings");
         preferences.clear();
+        reboot();
     }),
     WHorizontalAlign(),
     WButton("Reboot", "reboot", []() {
-        DEBUG_PRINTLN("Rebooting");
-        preferences.end();
-        ESP.restart();
+        reboot();
     }),
     WHorizontalAlign(),
     WButton("Back", "back", "/setup"),
@@ -278,6 +316,7 @@ WPage pages[] = {
     WPage("/setup", setupContents, SizeOfArray(setupContents)),
       WPage("/marcduino", marcduinoContents, SizeOfArray(marcduinoContents)),
       WPage("/wifi", wifiContents, SizeOfArray(wifiContents)),
+      WPage("/remote", remoteContents, SizeOfArray(remoteContents)),
       WPage("/firmware", firmwareContents, SizeOfArray(firmwareContents)),
         WUpload("/upload/firmware",
             [](Client& client)
