@@ -93,7 +93,117 @@ The prefix @ is optional and is ignored. All Marcduino commands are terminated b
 
 ## @3P61 - Set rear logics font to Aurabesh
 
-# WLogicEngine32 specific Marcduino commands
+# Panel commands
+
+## :CL00 - Close all panels
+
+## :OP00 - Open all panels
+
+## :OF00 - Flutter all panels
+
+## :SF<servo number>$<easing number> - Set servo easing for <servo number> to <easing number>
+
+## :OP<number> - Open panel <number>. For example :OP01
+
+## :CL<number> - Open panel <number> For example: CL02
+
+## :OF<number> - Flutter panel <number> For example: OF02
+
+# Holo projector commands
+
+## *ON01 - Front holo on
+
+## *OF01 - Front holo off
+
+## *ON02 - Rear holo on
+
+## *OF02 - Rear holo off
+
+## *ON03 - Top holo on
+
+## *OF03 - Top holo off
+
+## *ST00 - Reset all holos
+
+## *RD01 - Front holo random move
+
+## *RD02 - Rear holo random move
+
+## *RD03 - Top holo random move
+
+## *HPS301 - Front holo pulse
+
+## *HPS302 - Rear holo pulse
+
+## *HPS303 - Top holo pulse
+
+## *HPS601 - Front holo rainbow
+
+## *HPS602 - Rear holo rainbow
+
+## *HPS603 - Top holo rainbow
+
+## *HP001 - Front holo position down
+
+## *HP101 - Front holo position center
+
+## *HP201 - Front holo position up
+
+## *HP301 - Front holo position left
+
+## *HP401 - Front holo position upper left
+
+## *HP501 - Front holo position lower left
+
+## *HP601 - Front holo position right
+
+## *HP701 - Front holo position upper right
+
+## *HP801 - Front holo position upper right
+
+## *HP002 - Rear holo position down
+
+## *HP102 - Rear holo position center
+
+## *HP202 - Rear holo position up
+
+## *HP302 - Rear holo position left
+
+## *HP402 - Rear holo position upper left
+
+## *HP502 - Rear holo position lower left
+
+## *HP602 - Rear holo position right
+
+## *HP702 - Rear holo position upper right
+
+## *HP802 - Rear holo position upper right
+
+## *HP003 - Top holo position down
+
+## *HP103 - Top holo position center
+
+## *HP203 - Top holo position up
+
+## *HP303 - Top holo position left
+
+## *HP403 - Top holo position upper left
+
+## *HP503 - Top holo position lower left
+
+## *HP603 - Top holo position right
+
+## *HP703 - Top holo position upper right
+
+## *HP803 - Top holo position upper right
+
+## *HN01 - Front holo nod
+
+## *HN02 - Rear holo nod
+
+## *HN03 - Top holo nod
+
+# AstroPixels specific Marcduino commands
 
 Additional you can select a sequence to run by sending:
 
