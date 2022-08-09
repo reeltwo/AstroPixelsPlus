@@ -14,6 +14,7 @@ static const char* sSequenceMenu[] = {
     "Leia",
     "March",
     "Fire",
+    "Pulse",
     "Plasma",
     "Fractal",
     "Fade And\nScroll"
@@ -31,6 +32,7 @@ public:
         kLeia,
         kMarch,
         kFire,
+        kPulse,
         kPlasma,
         kFractal,
         kFadeAndScroll
@@ -52,26 +54,18 @@ public:
             case kAlarm:
                 FLD.selectSequence(LogicEngineRenderer::ALARM);
                 RLD.selectSequence(LogicEngineRenderer::ALARM);
-                frontPSI.selectSequence(LogicEngineRenderer::ALARM);
-                rearPSI.selectSequence(LogicEngineRenderer::ALARM);
                 break;
             case kLeia:
                 FLD.selectSequence(LogicEngineRenderer::LEIA);
                 RLD.selectSequence(LogicEngineRenderer::LEIA);
-                frontPSI.selectSequence(LogicEngineRenderer::LEIA);
-                rearPSI.selectSequence(LogicEngineRenderer::LEIA);
                 break;
             case kMarch:
                 FLD.selectSequence(LogicEngineRenderer::MARCH);
                 RLD.selectSequence(LogicEngineRenderer::MARCH);
-                frontPSI.selectSequence(LogicEngineRenderer::MARCH);
-                rearPSI.selectSequence(LogicEngineRenderer::MARCH);
                 break;
             case kFlash:
                 FLD.selectSequence(LogicEngineRenderer::FLASHCOLOR);
                 RLD.selectSequence(LogicEngineRenderer::FLASHCOLOR);
-                frontPSI.selectSequence(LogicEngineRenderer::FLASHCOLOR);
-                rearPSI.selectSequence(LogicEngineRenderer::FLASHCOLOR);
                 break;
             case kFailure:
                 FLD.selectSequence(LogicEngineRenderer::FAILURE);
@@ -82,14 +76,18 @@ public:
             case kScream:
                 FLD.selectSequence(LogicEngineRenderer::REDALERT);
                 RLD.selectSequence(LogicEngineRenderer::REDALERT);
-                frontPSI.selectSequence(LogicEngineRenderer::REDALERT);
-                rearPSI.selectSequence(LogicEngineRenderer::REDALERT);
                 break;
             case kFire:
                 FLD.selectSequence(LogicEngineRenderer::FIRE);
                 RLD.selectSequence(LogicEngineRenderer::FIRE);
                 frontPSI.selectSequence(LogicEngineRenderer::FIRE);
                 rearPSI.selectSequence(LogicEngineRenderer::FIRE);
+                break;
+            case kPulse:
+                FLD.selectSequence(LogicEngineRenderer::PULSE);
+                RLD.selectSequence(LogicEngineRenderer::PULSE);
+                frontPSI.selectSequence(LogicEngineRenderer::PULSE);
+                rearPSI.selectSequence(LogicEngineRenderer::PULSE);
                 break;
             case kPlasma:
                 FLD.selectSequence(PLASMA);
