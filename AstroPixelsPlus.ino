@@ -8,9 +8,9 @@
 
 #define USE_DEBUG                     // Define to enable debug diagnostic
 #define USE_WIFI                      // Define to enable Wifi support
-#define USE_DROID_REMOTE              // Define for droid remote support
 #define USE_SPIFFS
 #ifdef USE_WIFI
+#define USE_DROID_REMOTE              // Define for droid remote support
 #define USE_MDNS
 #define USE_OTA
 #define USE_WIFI_WEB
@@ -141,18 +141,104 @@ HoloLights topHolo(27, HoloLights::kRGB);
 
 ////////////////////////////////
 
-#include "MarcduinoHolo.h"
-#include "MarcduinoLogics.h"
+#define SMALL_PANEL         0x0001
+#define MEDIUM_PANEL        0x0002
+#define BIG_PANEL           0x0004
+#define PIE_PANEL           0x0008
+#define TOP_PIE_PANEL       0x0010
+#define MINI_PANEL          0x0020
+
+#define HOLO_HSERVO         0x1000
+#define HOLO_VSERVO         0x2000
+
+#define DOME_PANELS_MASK        (SMALL_PANEL|MEDIUM_PANEL|BIG_PANEL)
+#define PIE_PANELS_MASK         (PIE_PANEL)
+#define ALL_DOME_PANELS_MASK    (MINI_PANEL|DOME_PANELS_MASK|PIE_PANELS_MASK|TOP_PIE_PANEL)
+#define DOME_DANCE_PANELS_MASK  (DOME_PANELS_MASK|PIE_PANELS_MASK)
+#define HOLO_SERVOS_MASK        (HOLO_HSERVO|HOLO_VSERVO)
+
+#define PANEL_GROUP_1      (1L<<14)
+#define PANEL_GROUP_2      (1L<<15)
+#define PANEL_GROUP_3      (1L<<16)
+#define PANEL_GROUP_4      (1L<<17)
+#define PANEL_GROUP_5      (1L<<18)
+#define PANEL_GROUP_6      (1L<<19)
+#define PANEL_GROUP_7      (1L<<20)
+#define PANEL_GROUP_8      (1L<<21)
+#define PANEL_GROUP_9      (1L<<22)
+#define PANEL_GROUP_10     (1L<<23)
 
 ////////////////////////////////
-
+// These values will be configurable through the WiFi interface and stored in the preferences.
 const ServoSettings servoSettings[] PROGMEM = {
+    // First PCA9685 controller
+    { 1,  1550, 900, PANEL_GROUP_4|SMALL_PANEL },   /* 0: door 4 */
+    { 2,  2200, 1400, PANEL_GROUP_3|SMALL_PANEL },  /* 1: door 3 */
+    { 3,  1700, 900,  PANEL_GROUP_2|SMALL_PANEL },  /* 2: door 2 */
+    { 4,  1900, 1050, PANEL_GROUP_1|SMALL_PANEL },  /* 3: door 1 */
+    { 5, 1750, 1000, PANEL_GROUP_5|MEDIUM_PANEL }, /* 4: door 5 */
+    { 6,  1850, 1100, PANEL_GROUP_6|BIG_PANEL },    /* 5: door 9 */
+    { 7,  1800, 1275, MINI_PANEL },                 /* 6: mini door 2 */
+    { 8,  1800, 1250, MINI_PANEL },                 /* 7: mini front psi door */
+    { 9,  1850, 1150, PANEL_GROUP_10|PIE_PANEL },   /* 8: pie panel 1 */
+    { 10, 1650,  975, PANEL_GROUP_9|PIE_PANEL },    /* 9: pie panel 2 */
+    { 11, 2000, 1200, PANEL_GROUP_8|PIE_PANEL },    /* 10: pie panel 3 */
+    { 12, 1550,  750, PANEL_GROUP_7|PIE_PANEL },    /* 11: pie panel 4 */
+    { 13,  1750, 1150, TOP_PIE_PANEL },              /* 12: dome top panel */
+
+    // Second PCA9685 controller
+    { 16,  800, 1600, HOLO_HSERVO },                /* 13: horizontal front holo */
+    { 17,  800, 1800, HOLO_VSERVO },                /* 14: vertical front holo */
+    { 18,  800, 1600, HOLO_HSERVO },                /* 15: horizontal top holo */
+    { 19,  800, 1325, HOLO_VSERVO },                /* 16: vertical top holo */
+    { 20,  800, 1600, HOLO_VSERVO },                /* 17: vertical rear holo */
+    { 21,  800, 1800, HOLO_HSERVO },                /* 18: horizontal rear holo */
 };
 
 ServoDispatchPCA9685<SizeOfArray(servoSettings)> servoDispatch(servoSettings);
 ServoSequencer servoSequencer(servoDispatch);
 AnimationPlayer player(servoSequencer);
 MarcduinoSerial<> marcduinoSerial(player);
+
+/////////////////////////////////////////////////////////////////////////
+
+#define NUM_LEDS 28*4
+uint32_t lastEvent;
+CRGB leds[NUM_LEDS];
+#ifdef LIVE_STREAM
+AsyncUDP udp;
+#endif
+
+enum
+{
+    SDBITMAP = 100,
+    PLASMA,
+    METABALLS,
+    FRACTAL,
+    FADEANDSCROLL
+};
+
+#include "effects/BitmapEffect.h"
+#include "effects/FadeAndScrollEffect.h"
+#include "effects/FractalEffect.h"
+#include "effects/MeatBallsEffect.h"
+#include "effects/PlasmaEffect.h"
+
+LogicEffect CustomLogicEffectSelector(unsigned selectSequence)
+{
+    static const LogicEffect sCustomLogicEffects[] = {
+        LogicEffectBitmap,
+        LogicEffectPlasma,
+        LogicEffectMetaBalls,
+        LogicEffectFractal,
+        LogicEffectFadeAndScroll
+    };
+    if (selectSequence >= 100 && selectSequence-100 <= SizeOfArray(sCustomLogicEffects))
+    {
+        return LogicEffect(sCustomLogicEffects[selectSequence-100]);
+    }
+    return LogicEffectDefaultSelector(selectSequence);
+}
 
 ////////////////////////////////
 
@@ -184,6 +270,68 @@ void reboot()
     preferences.end();
     ESP.restart();
 }
+
+////////////////////////////////
+
+void resetSequence()
+{
+    Marcduino::send(F("$s"));
+    CommandEvent::process(F( 
+        "LE000000|0\n"
+        "FSOFF\n"
+        "BMOFF\n"
+        "HPA000|0\n"
+        "CB00000\n"
+        "DP00000\n"));
+}
+
+////////////////////////////////
+
+int32_t strtol(const char* cmd, const char** endptr)
+{
+    bool sign = false;
+    int32_t result = 0;
+    if (*cmd == '-')
+    {
+        cmd++;
+        sign = true;
+    }
+    while (isdigit(*cmd))
+    {
+        result = result*10L + (*cmd-'0');
+        cmd++;
+    }
+    *endptr = cmd;
+    return (sign) ? -result : result;
+}
+
+////////////////////////////////
+
+bool numberparams(const char* cmd, uint8_t &argcount, int32_t* args, uint8_t maxcount)
+{
+    for (argcount = 0; argcount < maxcount; argcount++)
+    {
+        args[argcount] = strtol(cmd, &cmd);
+        if (*cmd == '\0')
+        {
+            argcount++;
+            return true;
+        }
+        else if (*cmd != ',')
+        {
+            return false;
+        }
+        cmd++;
+    }
+    return true;
+}
+
+////////////////////////////////
+
+#include "MarcduinoHolo.h"
+#include "MarcduinoLogics.h"
+#include "MarcduinoSequence.h"
+#include "MarcduinoPanel.h"
 
 ////////////////////////////////
 
@@ -232,6 +380,9 @@ CommandScreenHandlerSMQ sDisplay;
 
 #include "menus/MainScreen.h"
 #include "menus/SplashScreen.h"
+#include "menus/SequenceScreen.h"
+#include "menus/LogicsScreen.h"
+#include "menus/HoloScreen.h"
 
 #endif
 
@@ -251,8 +402,11 @@ void setup()
     {
         DEBUG_PRINTLN("Failed to init prefs");
     }
+    preferences.clear();
+#ifdef USE_WIFI
     wifiEnabled = wifiActive = preferences.getBool(PREFERENCE_WIFI_ENABLED, WIFI_ENABLED);
     remoteEnabled = remoteActive = preferences.getBool(PREFERENCE_REMOTE_ENABLED, REMOTE_ENABLED);
+#endif
     if (preferences.getBool(PREFERENCE_MARCSERIAL_ENABLED, MARC_SERIAL_ENABLED))
     {
         COMMAND_SERIAL.begin(preferences.getInt(PREFERENCE_MARCSERIAL2, MARC_SERIAL2_BAUD_RATE));//, SERIAL_8N1, SERIAL2_RX_PIN, SERIAL2_TX_PIN);
@@ -281,6 +435,7 @@ void setup()
     RLD.selectScrollTextLeft("... AstroPixels ....", LogicEngineRenderer::kBlue, 0, 15);
     FLD.selectScrollTextLeft("... R2D2 ...", LogicEngineRenderer::kRed, 0, 15);
 
+#ifdef USE_WIFI
     if (remoteEnabled)
     {
     #ifdef USE_SMQ
@@ -320,8 +475,7 @@ void setup()
         if (wifiMarcduinoReceiver.enabled())
         {
             wifiMarcduinoReceiver.setCommandHandler([](const char* cmd) {
-                // Marcduino::processCommand(player, cmd);
-                printf("PROCESS: \"%s\"\n", cmd);
+                Marcduino::processCommand(player, cmd);
                 if (preferences.getBool(PREFERENCE_MARCWIFI_SERIAL_PASS, MARC_WIFI_SERIAL_PASS))
                 {
                     COMMAND_SERIAL.print(cmd); COMMAND_SERIAL.print('\r');
@@ -389,6 +543,7 @@ void setup()
         });
     #endif
     }
+#endif
 #ifdef USE_WIFI_WEB
     // For safety we will stop the motors if the web client is connected
     webServer.setConnect([]() {
@@ -396,6 +551,11 @@ void setup()
         // DEBUG_PRINTLN("Hello");
     });
 #endif
+
+    RLD.setLogicEffectSelector(CustomLogicEffectSelector);
+    FLD.setLogicEffectSelector(CustomLogicEffectSelector);
+    frontPSI.setLogicEffectSelector(CustomLogicEffectSelector);
+    rearPSI.setLogicEffectSelector(CustomLogicEffectSelector);
 
 #ifdef USE_WIFI
     xTaskCreatePinnedToCore(
@@ -420,17 +580,20 @@ MARCDUINO_ACTION(DirectCommand, ~RT, ({
 ////////////////
 
 MARCDUINO_ACTION(WifiByeBye, #WIBYE, ({
+#ifdef USE_WIFI
     if (wifiEnabled)
     {
         preferences.putBool(PREFERENCE_WIFI_ENABLED, false);
         DEBUG_PRINT("Disabling WiFi. ");
         reboot();
     }
+#endif
 }))
 
 ////////////////
 
 MARCDUINO_ACTION(WifiHiHi, #WIHI, ({
+#ifdef USE_WIFI
     if (!wifiEnabled)
     {
         preferences.putBool(PREFERENCE_WIFI_ENABLED, true);
@@ -438,22 +601,26 @@ MARCDUINO_ACTION(WifiHiHi, #WIHI, ({
         DEBUG_PRINT("Enabling WiFi. ");
         reboot();
     }
+#endif
 }))
 
 ////////////////
 
 MARCDUINO_ACTION(RemoteByeBye, #WIREMOTEBYE, ({
+#ifdef USE_DROID_REMOTE
     if (remoteEnabled)
     {
         preferences.putBool(PREFERENCE_REMOTE_ENABLED, false);
         DEBUG_PRINT("Disabling droid remote. ");
         reboot();
     }
+#endif
 }))
 
 ////////////////
 
 MARCDUINO_ACTION(RemoteHiHI, #WIREMOTEHI, ({
+#ifdef USE_DROID_REMOTE
     if (!remoteEnabled)
     {
         preferences.putBool(PREFERENCE_REMOTE_ENABLED, true);
@@ -461,11 +628,13 @@ MARCDUINO_ACTION(RemoteHiHI, #WIREMOTEHI, ({
         DEBUG_PRINT("Enabling droid remote. ");
         reboot();
     }
+#endif
 }))
 
 ////////////////
 
 #ifdef USE_SMQ
+// SMQ messages are received via ESPNOW.
 SMQMESSAGE(DIAL, {
     long newValue = msg.get_int32("new");
     long oldValue = msg.get_int32("old");
@@ -536,8 +705,5 @@ void loop()
     }
 #else
     mainLoop();
- #ifdef ESP32
-    vTaskDelay(1);
- #endif
 #endif
 }

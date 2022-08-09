@@ -5,20 +5,20 @@
 // 
 ///////////////////////////////////////////////////////////////////////////////
 
-static const char* sMainMenu[] = {
+static const char* sHoloMenu[] = {
     "Sequence",
-    "Logics"
+    "Holo"
 };
 
-class MainScreen : public MenuScreen
+class HoloScreen : public MenuScreen
 {
 public:
     enum {
         kSequence,
-        kLogics,
+        kHolo,
     };
-    MainScreen() :
-        MenuScreen(kMainScreen, sMainMenu, SizeOfArray(sMainMenu))
+    HoloScreen() :
+        MenuScreen(kHoloScreen, sHoloMenu, SizeOfArray(sHoloMenu))
     {}
 
     virtual void buttonInReleased() override
@@ -26,10 +26,8 @@ public:
         switch (fCurrentItem)
         {
             case kSequence:
-                pushScreen(kSequenceScreen);
                 break;
-            case kLogics:
-                pushScreen(kLogicsScreen);
+            case kHolo:
                 break;
         }
     }
@@ -58,4 +56,4 @@ public:
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-MainScreen sMainScreen;
+HoloScreen sHoloScreen;
