@@ -22,7 +22,7 @@ WMenuData mainMenu[] = {
 
 WMenuData setupMenu[] = {
     { "Home", "/" },
-    { "Marcduino", "/marcduino" },
+    { "Serial", "/serial" },
     { "WiFi", "/wifi" },
     { "Remote", "/remote" },
     { "Firmware", "/firmware" },
@@ -172,27 +172,28 @@ bool marcSerialEnabled;
 bool marcWifiEnabled;
 bool marcWifiSerialPass;
 
-WElement marcduinoContents[] = {
-    WSelect("Serial1 Baud Rate", "serial1baud",
-        swBaudRates, SizeOfArray(swBaudRates),
-        []() { return (marcSerial1Baud = (preferences.getInt(PREFERENCE_MARCSERIAL1, MARC_SERIAL1_BAUD_RATE)) == 2400) ? 0 : 1; },
-        [](int val) { marcSerial1Baud = (val == 0) ? 2400 : 9600; } ),
+WElement serialContents[] = {
     WSelect("Serial2 Baud Rate", "serial2baud",
         swBaudRates, SizeOfArray(swBaudRates),
         []() { return (marcSerial2Baud = (preferences.getInt(PREFERENCE_MARCSERIAL2, MARC_SERIAL2_BAUD_RATE)) == 2400) ? 0 : 1; },
         [](int val) { marcSerial2Baud = (val == 0) ? 2400 : 9600; } ),
-    WCheckbox("Serial1 pass-through to Serial2", "serialpass",
+    WVerticalAlign(),
+    WCheckbox("Serial pass-through to Serial2", "serialpass",
         []() { return (marcSerialPass = (preferences.getBool(PREFERENCE_MARCSERIAL_PASS, MARC_SERIAL_PASS))); },
         [](bool val) { marcSerialPass = val; } ),
-    WCheckbox("Marcduino on Serial1", "enabled",
+    WVerticalAlign(),
+    WCheckbox("JawaLite on Serial2", "enabled",
         []() { return (marcSerialEnabled = (preferences.getBool(PREFERENCE_MARCSERIAL_ENABLED, MARC_SERIAL_ENABLED))); },
         [](bool val) { marcSerialEnabled = val; } ),
-    WCheckbox("Marcduino on Wifi (port 2000)", "wifienabled",
+    WVerticalAlign(),
+    WCheckbox("JawaLite on Wifi (port 2000)", "wifienabled",
         []() { return (marcWifiEnabled = (preferences.getBool(PREFERENCE_MARCWIFI_ENABLED, MARC_WIFI_ENABLED))); },
         [](bool val) { marcWifiEnabled = val; } ),
-    WCheckbox("Marcduino Wifi pass-through to Serial2", "wifipass",
+    WVerticalAlign(),
+    WCheckbox("JawaLite Wifi pass-through to Serial2", "wifipass",
         []() { return (marcWifiSerialPass = (preferences.getBool(PREFERENCE_MARCWIFI_SERIAL_PASS, MARC_WIFI_SERIAL_PASS))); },
         [](bool val) { marcWifiSerialPass = val; } ),
+    WVerticalAlign(),
     WButton("Save", "save", []() {
         preferences.putInt(PREFERENCE_MARCSERIAL1, marcSerial1Baud);
         preferences.putInt(PREFERENCE_MARCSERIAL2, marcSerial2Baud);
@@ -314,7 +315,7 @@ WPage pages[] = {
     WPage("/", mainContents, SizeOfArray(mainContents)),
       WPage("/logics", logicsContents, SizeOfArray(logicsContents)),
     WPage("/setup", setupContents, SizeOfArray(setupContents)),
-      WPage("/marcduino", marcduinoContents, SizeOfArray(marcduinoContents)),
+      WPage("/serial", serialContents, SizeOfArray(serialContents)),
       WPage("/wifi", wifiContents, SizeOfArray(wifiContents)),
       WPage("/remote", remoteContents, SizeOfArray(remoteContents)),
       WPage("/firmware", firmwareContents, SizeOfArray(firmwareContents)),

@@ -30,7 +30,7 @@
 
 #define PREFERENCE_REMOTE_ENABLED       "remote"
 #define PREFERENCE_REMOTE_HOSTNAME      "rhost"
-#define PREFERENCE_REMOTE_SECRET        "remote"
+#define PREFERENCE_REMOTE_SECRET        "rsecret"
 
 #define PREFERENCE_WIFI_ENABLED         "wifi"
 #define PREFERENCE_WIFI_SSID            "ssid"
@@ -44,6 +44,10 @@
 
 #define PREFERENCE_MARCWIFI_ENABLED     "mwifi"
 #define PREFERENCE_MARCWIFI_SERIAL_PASS "mwifipass"
+
+////////////////////////////////
+
+#define CONSOLE_BUFFER_SIZE     300
 
 ////////////////////////////////
 
@@ -268,6 +272,7 @@ void reboot()
     DEBUG_PRINTLN("Restarting...");
     unmountFileSystems();
     preferences.end();
+    delay(1000);
     ESP.restart();
 }
 
@@ -402,7 +407,6 @@ void setup()
     {
         DEBUG_PRINTLN("Failed to init prefs");
     }
-    preferences.clear();
 #ifdef USE_WIFI
     wifiEnabled = wifiActive = preferences.getBool(PREFERENCE_WIFI_ENABLED, WIFI_ENABLED);
     remoteEnabled = remoteActive = preferences.getBool(PREFERENCE_REMOTE_ENABLED, REMOTE_ENABLED);
@@ -633,6 +637,16 @@ MARCDUINO_ACTION(RemoteHiHI, #WIREMOTEHI, ({
 
 ////////////////
 
+MARCDUINO_ACTION(ClearPrefs, #WZERO, ({
+#ifdef USE_DROID_REMOTE
+    preferences.clear();
+    DEBUG_PRINT("Clearing preferences. ");
+    reboot();
+#endif
+}))
+
+////////////////
+
 #ifdef USE_SMQ
 // SMQ messages are received via ESPNOW.
 SMQMESSAGE(DIAL, {
@@ -662,11 +676,50 @@ SMQMESSAGE(SELECT, {
 
 ////////////////
 
+static unsigned sPos;
+static char sBuffer[CONSOLE_BUFFER_SIZE];
+
+////////////////
+
 void mainLoop()
 {
     AnimatedEvent::process();
 #ifdef USE_MENUS
     sDisplay.process();
+#endif
+
+    if (Serial.available())
+    {
+        int ch = Serial.read();
+        if (ch == 0x0A || ch == 0x0D)
+        {
+            Marcduino::processCommand(player, sBuffer);
+            sPos = 0;
+        }
+        else if (sPos < SizeOfArray(sBuffer)-1)
+        {
+            sBuffer[sPos++] = ch;
+            sBuffer[sPos] = '\0';
+        }
+    }
+
+#ifdef COMMAND_SERIAL
+    // Serial commands are processed in the same buffer as the console serial
+    if (COMMAND_SERIAL.available())
+    {
+        int ch = COMMAND_SERIAL.read();
+        printf("ch: %d\n", ch);
+        if (ch == 0x0A || ch == 0x0D)
+        {
+            Marcduino::processCommand(player, sBuffer);
+            sPos = 0;
+        }
+        else if (sPos < SizeOfArray(sBuffer)-1)
+        {
+            sBuffer[sPos++] = ch;
+            sBuffer[sPos] = '\0';
+        }
+    }
 #endif
 }
 
