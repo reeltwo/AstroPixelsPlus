@@ -20,6 +20,22 @@
 
 ////////////////////////////////
 
+// Replace with your network credentials
+#ifdef USE_WIFI
+#define REMOTE_ENABLED       false    // default disabled
+#define WIFI_ENABLED         true     // default enabled
+// Set these to your desired WiFi credentials.
+#define WIFI_AP_NAME         "AstroPixels"
+#define WIFI_AP_PASSPHRASE   "Astromech"
+#define WIFI_ACCESS_POINT    true  /* true if access point: false if joining existing wifi */
+#endif
+
+// SMQ device name for ESPNOW
+#define SMQ_HOSTNAME         "Astro"
+#define SMQ_SECRET           "Astromech"
+
+////////////////////////////////
+
 #if __has_include("build_version.h")
 #include "build_version.h"
 #else
@@ -81,22 +97,6 @@
 
 ////////////////////////////////
 
-// Replace with your network credentials
-#ifdef USE_WIFI
-#define REMOTE_ENABLED       false
-#define WIFI_ENABLED         true
-// Set these to your desired credentials.
-#define WIFI_AP_NAME         "AstroPixels"
-#define WIFI_AP_PASSPHRASE   "Astromech"
-#define WIFI_ACCESS_POINT    true  /* true if access point: false if joining existing wifi */
-#endif
-
-#define SMQ_HOSTNAME         "Astro"
-#define SMQ_SECRET           "Astromech"
-
-////////////////////////////////
-
-#define MARC_SERIAL1_BAUD_RATE          9600
 #define MARC_SERIAL2_BAUD_RATE          9600
 #define MARC_SERIAL_PASS                true
 #define MARC_SERIAL_ENABLED             true
@@ -228,6 +228,8 @@ enum
 #include "effects/MeatBallsEffect.h"
 #include "effects/PlasmaEffect.h"
 
+////////////////////////////////
+// Standard LogicEngine sequences are in the range 0-99. Custom sequences start at 100
 LogicEffect CustomLogicEffectSelector(unsigned selectSequence)
 {
     static const LogicEffect sCustomLogicEffects[] = {
@@ -266,7 +268,7 @@ void unmountFileSystems()
 }
 
 ////////////////////////////////
-
+// This function is called when settings have been changed and needs a reboot
 void reboot()
 {
     DEBUG_PRINTLN("Restarting...");
@@ -277,17 +279,17 @@ void reboot()
 }
 
 ////////////////////////////////
-
+// This function is called when aborting or ending Marcduino sequences. It should reset all droid devices to Normal
 void resetSequence()
 {
     Marcduino::send(F("$s"));
     CommandEvent::process(F( 
-        "LE000000|0\n"
-        "FSOFF\n"
-        "BMOFF\n"
-        "HPA000|0\n"
-        "CB00000\n"
-        "DP00000\n"));
+        "LE000000|0\n"   // LogicEngine devices to normal
+        "FSOFF\n"        // Fire Stripe Off
+        "BMOFF\n"        // Bad Motiviator Off
+        "HPA000|0\n"     // Holo Projectors to Normal
+        "CB00000\n"      // Charge Bay to Normal
+        "DP00000\n"));   // Data Panel to Normal
 }
 
 ////////////////////////////////

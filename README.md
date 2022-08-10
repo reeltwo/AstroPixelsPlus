@@ -7,6 +7,9 @@ You can order AstroPixels boards here:
 
 https://shop.we-make-things.co.uk/index.php?route=product/product&product_id=56
 
+Check out the Wiki for this firmware:
+
+https://github.com/reeltwo/AstroPixelsPlus/wiki
 
 **********
 
