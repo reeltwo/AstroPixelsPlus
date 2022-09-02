@@ -82,6 +82,12 @@
 #include "dome/LogicEngineController.h"
 #include "dome/HoloLights.h"
 #include "dome/NeoPSI.h"
+#include "dome/FireStrip.h"
+#include "dome/BadMotivator.h"
+#include "dome/TeecesPSI.h"
+#include "dome/TeecesLogics.h"
+#include "body/DataPanel.h"
+#include "body/ChargeBayIndicator.h"
 
 #include "ServoDispatchPCA9685.h"
 #include "ServoSequencer.h"
@@ -133,15 +139,46 @@
 
 ////////////////////////////////
 
-AstroPixelRLD<> RLD(LogicEngineRLDDefault, 3);
-AstroPixelFLD<> FLD(LogicEngineFLDDefault, 1);
+#define PIN_SDA 21
+#define PIN_SCL 22
+#define PIN_FRONT_LOGIC 15
+#define PIN_REAR_LOGIC 33
+#define PIN_FRONT_PSI 32
+#define PIN_REAR_PSI 23
+#define PIN_FRONT_HOLO 25
+#define PIN_REAR_HOLO 26
+#define PIN_TOP_HOLO 27
+#define PIN_AUX1 2
+#define PIN_AUX2 4
+#define PIN_AUX3 5
+#define PIN_AUX4 18
+#define PIN_AUX5 19
 
-AstroPixelFrontPSI<> frontPSI(LogicEngineFrontPSIDefault, 4);
-AstroPixelRearPSI<> rearPSI(LogicEngineRearPSIDefault, 5);
+#define CBI_DATAIN_PIN      PIN_AUX3
+#define CBI_CLOCK_PIN       PIN_AUX2
+#define CBI_LOAD_PIN        PIN_AUX1
 
-HoloLights frontHolo(25, HoloLights::kRGB);
-HoloLights rearHolo(26, HoloLights::kRGB);
-HoloLights topHolo(27, HoloLights::kRGB);   
+////////////////////////////////
+
+AstroPixelRLD<PIN_REAR_LOGIC> RLD(LogicEngineRLDDefault, 3);
+AstroPixelFLD<PIN_FRONT_LOGIC> FLD(LogicEngineFLDDefault, 1);
+
+AstroPixelFrontPSI<PIN_FRONT_PSI> frontPSI(LogicEngineFrontPSIDefault, 4);
+AstroPixelRearPSI<PIN_REAR_PSI> rearPSI(LogicEngineRearPSIDefault, 5);
+
+HoloLights frontHolo(PIN_FRONT_HOLO, HoloLights::kRGB);
+HoloLights rearHolo(PIN_REAR_HOLO, HoloLights::kRGB);
+HoloLights topHolo(PIN_TOP_HOLO, HoloLights::kRGB);
+
+// FireStrip fireStrip(PIN_AUX4);
+// BadMotivator badMotivator(PIN_AUX5);
+
+// LedControlMAX7221<5> ledChain1(CBI_DATAIN_PIN, CBI_CLOCK_PIN, CBI_LOAD_PIN);
+// ChargeBayIndicator chargeBayIndicator(ledChain1);
+// DataPanel dataPanel(ledChain1);
+// TeecesPSI teecesPSI(ledChain1);
+// TeecesRearLogics teecesRLD(ledChain1);
+// TeecesFrontLogics teecesTFLD(ledChain1);
 
 ////////////////////////////////
 
@@ -176,27 +213,27 @@ HoloLights topHolo(27, HoloLights::kRGB);
 // These values will be configurable through the WiFi interface and stored in the preferences.
 const ServoSettings servoSettings[] PROGMEM = {
     // First PCA9685 controller
-    { 1,  1550, 900, PANEL_GROUP_4|SMALL_PANEL },   /* 0: door 4 */
-    { 2,  2200, 1400, PANEL_GROUP_3|SMALL_PANEL },  /* 1: door 3 */
-    { 3,  1700, 900,  PANEL_GROUP_2|SMALL_PANEL },  /* 2: door 2 */
-    { 4,  1900, 1050, PANEL_GROUP_1|SMALL_PANEL },  /* 3: door 1 */
-    { 5, 1750, 1000, PANEL_GROUP_5|MEDIUM_PANEL }, /* 4: door 5 */
-    { 6,  1850, 1100, PANEL_GROUP_6|BIG_PANEL },    /* 5: door 9 */
-    { 7,  1800, 1275, MINI_PANEL },                 /* 6: mini door 2 */
-    { 8,  1800, 1250, MINI_PANEL },                 /* 7: mini front psi door */
-    { 9,  1850, 1150, PANEL_GROUP_10|PIE_PANEL },   /* 8: pie panel 1 */
-    { 10, 1650,  975, PANEL_GROUP_9|PIE_PANEL },    /* 9: pie panel 2 */
-    { 11, 2000, 1200, PANEL_GROUP_8|PIE_PANEL },    /* 10: pie panel 3 */
-    { 12, 1550,  750, PANEL_GROUP_7|PIE_PANEL },    /* 11: pie panel 4 */
-    { 13,  1750, 1150, TOP_PIE_PANEL },              /* 12: dome top panel */
+    { 1,  800, 2200, PANEL_GROUP_4|SMALL_PANEL },  /* 0: door 4 */
+    { 2,  800, 2200, PANEL_GROUP_3|SMALL_PANEL },  /* 1: door 3 */
+    { 3,  800, 2200,  PANEL_GROUP_2|SMALL_PANEL }, /* 2: door 2 */
+    { 4,  800, 2200, PANEL_GROUP_1|SMALL_PANEL },  /* 3: door 1 */
+    { 5,  800, 2200, PANEL_GROUP_5|MEDIUM_PANEL }, /* 4: door 5 */
+    { 6,  800, 2200, PANEL_GROUP_6|BIG_PANEL },    /* 5: door 9 */
+    { 7,  800, 2200, MINI_PANEL },                 /* 6: mini door 2 */
+    { 8,  800, 2200, MINI_PANEL },                 /* 7: mini front psi door */
+    { 9,  800, 2200, PANEL_GROUP_10|PIE_PANEL },   /* 8: pie panel 1 */
+    { 10, 800, 2200, PANEL_GROUP_9|PIE_PANEL },    /* 9: pie panel 2 */
+    { 11, 800, 2200, PANEL_GROUP_8|PIE_PANEL },    /* 10: pie panel 3 */
+    { 12, 800, 2200, PANEL_GROUP_7|PIE_PANEL },    /* 11: pie panel 4 */
+    { 13, 800, 2200, TOP_PIE_PANEL },              /* 12: dome top panel */
 
     // Second PCA9685 controller
-    { 16,  800, 1600, HOLO_HSERVO },                /* 13: horizontal front holo */
-    { 17,  800, 1800, HOLO_VSERVO },                /* 14: vertical front holo */
-    { 18,  800, 1600, HOLO_HSERVO },                /* 15: horizontal top holo */
-    { 19,  800, 1325, HOLO_VSERVO },                /* 16: vertical top holo */
-    { 20,  800, 1600, HOLO_VSERVO },                /* 17: vertical rear holo */
-    { 21,  800, 1800, HOLO_HSERVO },                /* 18: horizontal rear holo */
+    { 16, 800, 2200, HOLO_HSERVO },                /* 13: horizontal front holo */
+    { 17, 800, 2200, HOLO_VSERVO },                /* 14: vertical front holo */
+    { 18, 800, 2200, HOLO_HSERVO },                /* 15: horizontal top holo */
+    { 19, 800, 2200, HOLO_VSERVO },                /* 16: vertical top holo */
+    { 20, 800, 2200, HOLO_VSERVO },                /* 17: vertical rear holo */
+    { 21, 800, 2200, HOLO_HSERVO },                /* 18: horizontal rear holo */
 };
 
 ServoDispatchPCA9685<SizeOfArray(servoSettings)> servoDispatch(servoSettings);
@@ -339,6 +376,7 @@ bool numberparams(const char* cmd, uint8_t &argcount, int32_t* args, uint8_t max
 #include "MarcduinoLogics.h"
 #include "MarcduinoSequence.h"
 #include "MarcduinoPanel.h"
+#include "MarcduinoPSI.h"
 
 ////////////////////////////////
 
@@ -401,6 +439,66 @@ CommandScreenHandlerSMQ sDisplay;
 
 ////////////////////////////////
 
+void scan_i2c()
+{
+    unsigned nDevices = 0;
+    for (byte address = 1; address < 127; address++)
+    {
+        String name = "<unknown>";
+        Wire.beginTransmission(address);
+        byte error = Wire.endTransmission();
+        if (address == 0x70)
+        {
+            // All call address for PCA9685
+            name = "PCA9685:all";
+        }
+        if (address == 0x40)
+        {
+            // Adafruit PCA9685
+            name = "PCA9685";
+        }
+        if (address == 0x14)
+        {
+            // IA-Parts magic panel
+            name = "IA-Parts Magic Panel";
+        }
+        if (address == 0x20)
+        {
+            // IA-Parts periscope
+            name = "IA-Parts Periscope";
+        }
+        if (address == 0x16)
+        {
+            // PSIPro
+            name = "PSIPro";
+        }
+
+        if (error == 0)
+        {
+            Serial.print("I2C device found at address 0x");
+            if (address < 16)
+                Serial.print("0");
+            Serial.print(address, HEX);
+            Serial.print(" ");
+            Serial.println(name);
+            nDevices++;
+        }
+        else if (error == 4)
+        {
+            Serial.print("Unknown error at address 0x");
+            if (address < 16)
+                Serial.print("0");
+            Serial.println(address, HEX);
+        }
+    }
+    if (nDevices == 0)
+        Serial.println("No I2C devices found\n");
+    else
+        Serial.println("done\n");
+}
+
+////////////////////////////////
+
 void setup()
 {
     REELTWO_READY();
@@ -426,7 +524,11 @@ void setup()
     }
 
     Wire.begin();
+    // scan_i2c();
     SetupEvent::ready();
+
+    // dataPanel.setSequence(DataPanel::kDisabled);
+    // chargeBayIndicator.setSequence(ChargeBayIndicator::kDisabled);
 
 #ifdef USE_LCD_SCREEN
     sDisplay.setEnabled(sDisplay.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS));
@@ -481,6 +583,7 @@ void setup()
         if (wifiMarcduinoReceiver.enabled())
         {
             wifiMarcduinoReceiver.setCommandHandler([](const char* cmd) {
+                printf("cmd: %s\n", cmd);
                 Marcduino::processCommand(player, cmd);
                 if (preferences.getBool(PREFERENCE_MARCWIFI_SERIAL_PASS, MARC_WIFI_SERIAL_PASS))
                 {
@@ -567,7 +670,7 @@ void setup()
     xTaskCreatePinnedToCore(
           eventLoopTask,
           "Events",
-          5000,    // shrink stack size?
+          10000,    // shrink stack size?
           NULL,
           1,
           &eventTask,
@@ -730,6 +833,8 @@ void mainLoop()
 #ifdef USE_WIFI
 void eventLoopTask(void* )
 {
+    // TODO remove delay
+    delay(5000);
     for (;;)
     {
         mainLoop();
