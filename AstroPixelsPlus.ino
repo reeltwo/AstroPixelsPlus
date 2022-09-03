@@ -34,12 +34,14 @@
 #define SMQ_HOSTNAME         "Astro"
 #define SMQ_SECRET           "Astromech"
 
-////////////////////////////////
+///////////////////////////////////
 
 #if __has_include("build_version.h")
 #include "build_version.h"
-#else
-#define BUILD_VERSION "custom"
+#endif
+
+#if __has_include("reeltwo_build_version.h")
+#include "reeltwo_build_version.h"
 #endif
 
 ////////////////////////////////
@@ -511,6 +513,8 @@ void setup()
     wifiEnabled = wifiActive = preferences.getBool(PREFERENCE_WIFI_ENABLED, WIFI_ENABLED);
     remoteEnabled = remoteActive = preferences.getBool(PREFERENCE_REMOTE_ENABLED, REMOTE_ENABLED);
 #endif
+    PrintReelTwoInfo(Serial, "AstroPixelsPlus");
+
     if (preferences.getBool(PREFERENCE_MARCSERIAL_ENABLED, MARC_SERIAL_ENABLED))
     {
         COMMAND_SERIAL.begin(preferences.getInt(PREFERENCE_MARCSERIAL2, MARC_SERIAL2_BAUD_RATE));//, SERIAL_8N1, SERIAL2_RX_PIN, SERIAL2_TX_PIN);
@@ -547,7 +551,7 @@ void setup()
     if (remoteEnabled)
     {
     #ifdef USE_SMQ
-        WiFi.mode(WIFI_MODE_STA);
+        WiFi.mode(WIFI_MODE_APSTA);
         if (SMQ::init(preferences.getString(PREFERENCE_REMOTE_HOSTNAME, SMQ_HOSTNAME),
                         preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_SECRET)))
         {
@@ -569,7 +573,7 @@ void setup()
         }
     #endif
     }
-    else if (wifiEnabled)
+    if (wifiEnabled)
     {
     #ifdef USE_WIFI_WEB
         // In preparation for adding WiFi settings web page
@@ -706,7 +710,6 @@ MARCDUINO_ACTION(WifiHiHi, #WIHI, ({
     if (!wifiEnabled)
     {
         preferences.putBool(PREFERENCE_WIFI_ENABLED, true);
-        preferences.putBool(PREFERENCE_REMOTE_ENABLED, false);
         DEBUG_PRINT("Enabling WiFi. ");
         reboot();
     }
@@ -733,7 +736,6 @@ MARCDUINO_ACTION(RemoteHiHI, #WIREMOTEHI, ({
     if (!remoteEnabled)
     {
         preferences.putBool(PREFERENCE_REMOTE_ENABLED, true);
-        preferences.putBool(PREFERENCE_WIFI_ENABLED, false);
         DEBUG_PRINT("Enabling droid remote. ");
         reboot();
     }
@@ -857,7 +859,7 @@ void loop()
         webServer.handle();
     #endif
     }
-    else if (remoteActive)
+    if (remoteActive)
     {
     #ifdef USE_SMQ
         SMQ::process();

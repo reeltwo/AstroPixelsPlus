@@ -220,8 +220,7 @@ WElement wifiContents[] = {
     W1("WiFi Setup"),
     WCheckbox("WiFi Enabled", "enabled",
         []() { return wifiEnabled; },
-        [](bool val) { wifiEnabled = val; if (wifiEnabled) remoteEnabled = false; } ),
-    WLabel("WiFi Disables Droid Remote", "label2"),
+        [](bool val) { wifiEnabled = val; } ),
     WHR(),
     WCheckbox("Access Point", "apmode",
         []() { return (wifiAP = preferences.getBool(PREFERENCE_WIFI_AP, WIFI_ACCESS_POINT)); },
@@ -258,8 +257,7 @@ WElement remoteContents[] = {
     W1("Droid Remote Setup"),
     WCheckbox("Droid Remote Enabled", "remoteenabled",
         []() { return remoteEnabled; },
-        [](bool val) { remoteEnabled = val; if (remoteEnabled) wifiEnabled = false; } ),
-    WLabel("Droid Remote Disables WiFi", "label1"),
+        [](bool val) { remoteEnabled = val; } ),
     WHR(),
     WTextField("Device Name:", "hostname",
         []()->String { return (remoteHostName = preferences.getString(PREFERENCE_REMOTE_HOSTNAME, SMQ_HOSTNAME)); },
@@ -270,7 +268,6 @@ WElement remoteContents[] = {
     WButton("Save", "save", []() {
         DEBUG_PRINTLN("Remote Changed");
         preferences.putBool(PREFERENCE_REMOTE_ENABLED, remoteEnabled);
-        preferences.putBool(PREFERENCE_WIFI_ENABLED, wifiEnabled);
         preferences.putString(PREFERENCE_REMOTE_HOSTNAME, remoteHostName);
         preferences.putString(PREFERENCE_REMOTE_SECRET, remoteSecret);
         reboot();
