@@ -6,6 +6,8 @@
  * 
  */
 
+// Define USE_I2C_ADDRESS to enable slave mode. This will disable servo support
+//#define USE_I2C_ADDRESS 0x0a
 #define USE_DEBUG                     // Define to enable debug diagnostic
 #define USE_WIFI                      // Define to enable Wifi support
 #define USE_SPIFFS
@@ -91,7 +93,12 @@
 #include "body/DataPanel.h"
 #include "body/ChargeBayIndicator.h"
 
+#ifdef USE_I2C_ADDRESS
+#include "i2c/I2CReceiver.h"
+#include "ServoDispatchDirect.h"
+#else
 #include "ServoDispatchPCA9685.h"
+#endif
 #include "ServoSequencer.h"
 #include "core/Marcduino.h"
 
@@ -214,6 +221,7 @@ HoloLights topHolo(PIN_TOP_HOLO, HoloLights::kRGB);
 ////////////////////////////////
 // These values will be configurable through the WiFi interface and stored in the preferences.
 const ServoSettings servoSettings[] PROGMEM = {
+#ifndef USE_I2C_ADDRESS
     // First PCA9685 controller
     { 1,  800, 2200, PANEL_GROUP_4|SMALL_PANEL },  /* 0: door 4 */
     { 2,  800, 2200, PANEL_GROUP_3|SMALL_PANEL },  /* 1: door 3 */
@@ -236,9 +244,14 @@ const ServoSettings servoSettings[] PROGMEM = {
     { 19, 800, 2200, HOLO_VSERVO },                /* 16: vertical top holo */
     { 20, 800, 2200, HOLO_VSERVO },                /* 17: vertical rear holo */
     { 21, 800, 2200, HOLO_HSERVO },                /* 18: horizontal rear holo */
+#endif
 };
 
+#ifdef USE_I2C_ADDRESS
+ServoDispatchDirect<SizeOfArray(servoSettings)> servoDispatch(servoSettings);
+#else
 ServoDispatchPCA9685<SizeOfArray(servoSettings)> servoDispatch(servoSettings);
+#endif
 ServoSequencer servoSequencer(servoDispatch);
 AnimationPlayer player(servoSequencer);
 MarcduinoSerial<> marcduinoSerial(player);
@@ -785,6 +798,14 @@ SMQMESSAGE(SELECT, {
 
 static unsigned sPos;
 static char sBuffer[CONSOLE_BUFFER_SIZE];
+
+////////////////
+
+#ifdef USE_I2C_ADDRESS
+I2CReceiverBase<CONSOLE_BUFFER_SIZE> i2cReceiver(USE_I2C_ADDRESS, [](char* cmd) {
+    Marcduino::processCommand(player, cmd);
+});
+#endif
 
 ////////////////
 
