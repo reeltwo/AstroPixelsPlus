@@ -7,7 +7,7 @@
  */
 
 // Define USE_I2C_ADDRESS to enable slave mode. This will disable servo support
-//#define USE_I2C_ADDRESS 0x0a
+#define USE_I2C_ADDRESS 0x0a
 #define USE_DEBUG                     // Define to enable debug diagnostic
 #define USE_WIFI                      // Define to enable Wifi support
 #define USE_SPIFFS
@@ -540,7 +540,9 @@ void setup()
         DEBUG_PRINTLN("Failed to mount read only filesystem");
     }
 
+#ifndef USE_I2C_ADDRESS
     Wire.begin();
+#endif
     // scan_i2c();
     SetupEvent::ready();
 
