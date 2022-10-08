@@ -7,7 +7,7 @@
  */
 
 // Define USE_I2C_ADDRESS to enable slave mode. This will disable servo support
-#define USE_I2C_ADDRESS 0x0a
+//#define USE_I2C_ADDRESS 0x0a
 #define USE_DEBUG                     // Define to enable debug diagnostic
 #define USE_WIFI                      // Define to enable Wifi support
 #define USE_SPIFFS
@@ -805,6 +805,9 @@ static char sBuffer[CONSOLE_BUFFER_SIZE];
 
 #ifdef USE_I2C_ADDRESS
 I2CReceiverBase<CONSOLE_BUFFER_SIZE> i2cReceiver(USE_I2C_ADDRESS, [](char* cmd) {
+    DEBUG_PRINT("[I2C] RECEIVED=\"");
+    DEBUG_PRINT(cmd);
+    DEBUG_PRINTLN("\"");
     Marcduino::processCommand(player, cmd);
 });
 #endif
