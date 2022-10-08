@@ -6,6 +6,22 @@
  * 
  */
 
+// Support for RSeries Logic Engine FLD and/or RLD lights
+// Define USE_RSERIES_FLD to enable support for RSeries FLD
+//#define USE_RSERIES_FLD
+// Define USE_RSERIES_RLD to enable support for RSeries RLD
+//#define USE_RSERIES_RLD
+// Define USE_RSERIES_RLD_CURVED to enable support for RSeries RLD curved (AUX5 becomes clock pin)
+//#define USE_RSERIES_RLD_CURVED
+
+#if defined(USE_RSERIES_FLD) || defined(USE_RSERIES_RLD) || defined(USE_RSERIES_RLD_CURVED)
+// RSeries logics require FastLED
+// #if defined(ESP_ARDUINO_VERSION_MAJOR) && ESP_ARDUINO_VERSION_MAJOR >= 2)
+// #error FastLED
+// #endif
+#define USE_LEDLIB 0
+#endif
+
 // Define USE_I2C_ADDRESS to enable slave mode. This will disable servo support
 //#define USE_I2C_ADDRESS 0x0a
 #define USE_DEBUG                     // Define to enable debug diagnostic
@@ -163,14 +179,30 @@
 #define PIN_AUX4 18
 #define PIN_AUX5 19
 
+#ifdef USE_RSERIES_RLD_CURVED
+// Define RSeries RLD clock pin to be AUX5 (could just as well be AUX1, AUX2, AUX3, or AUX4)
+#define PIN_REAR_LOGIC_CLOCK  PIN_AUX5
+#endif
+
 #define CBI_DATAIN_PIN      PIN_AUX3
 #define CBI_CLOCK_PIN       PIN_AUX2
 #define CBI_LOAD_PIN        PIN_AUX1
 
 ////////////////////////////////
 
+#if defined(USE_RSERIES_RLD_CURVED)
+LogicEngineCurvedRLD<PIN_REAR_LOGIC, PIN_REAR_LOGIC_CLOCK> RLD(LogicEngineRLDDefault, 3);
+#elif defined(USE_RSERIES_RLD)
+LogicEngineDeathStarRLD<PIN_REAR_LOGIC> RLD(LogicEngineRLDDefault, 3);
+#else
 AstroPixelRLD<PIN_REAR_LOGIC> RLD(LogicEngineRLDDefault, 3);
+#endif
+
+#ifdef USE_RSERIES_FLD
+LogicEngineDeathStarFLD<PIN_FRONT_LOGIC> FLD(LogicEngineFLDDefault, 1);
+#else
 AstroPixelFLD<PIN_FRONT_LOGIC> FLD(LogicEngineFLDDefault, 1);
+#endif
 
 AstroPixelFrontPSI<PIN_FRONT_PSI> frontPSI(LogicEngineFrontPSIDefault, 4);
 AstroPixelRearPSI<PIN_REAR_PSI> rearPSI(LogicEngineRearPSIDefault, 5);
@@ -530,10 +562,10 @@ void setup()
 
     if (preferences.getBool(PREFERENCE_MARCSERIAL_ENABLED, MARC_SERIAL_ENABLED))
     {
-        COMMAND_SERIAL.begin(preferences.getInt(PREFERENCE_MARCSERIAL2, MARC_SERIAL2_BAUD_RATE));//, SERIAL_8N1, SERIAL2_RX_PIN, SERIAL2_TX_PIN);
+        COMMAND_SERIAL.begin(preferences.getInt(PREFERENCE_MARCSERIAL2, MARC_SERIAL2_BAUD_RATE), SERIAL_8N1, SERIAL2_RX_PIN, SERIAL2_TX_PIN);
         // if (preferences.getBool(PREFERENCE_MARCSERIAL_PASS, MARC_SERIAL_PASS))
 
-        marcduinoSerial.setStream(&COMMAND_SERIAL);
+        marcduinoSerial.setStream(&COMMAND_SERIAL, &Serial);
     }
     if (!mountReadOnlyFileSystem())
     {
@@ -835,25 +867,6 @@ void mainLoop()
             sBuffer[sPos] = '\0';
         }
     }
-
-#ifdef COMMAND_SERIAL
-    // Serial commands are processed in the same buffer as the console serial
-    if (COMMAND_SERIAL.available())
-    {
-        int ch = COMMAND_SERIAL.read();
-        printf("ch: %d\n", ch);
-        if (ch == 0x0A || ch == 0x0D)
-        {
-            Marcduino::processCommand(player, sBuffer);
-            sPos = 0;
-        }
-        else if (sPos < SizeOfArray(sBuffer)-1)
-        {
-            sBuffer[sPos++] = ch;
-            sBuffer[sPos] = '\0';
-        }
-    }
-#endif
 }
 
 ////////////////
@@ -861,11 +874,26 @@ void mainLoop()
 #ifdef USE_WIFI
 void eventLoopTask(void* )
 {
-    // TODO remove delay
-    delay(5000);
     for (;;)
     {
-        mainLoop();
+        if (wifiActive)
+        {
+        #ifdef USE_OTA
+            ArduinoOTA.handle();
+        #endif
+        #ifdef USE_WIFI_WEB
+            webServer.handle();
+        #endif
+        }
+        if (remoteActive)
+        {
+        #ifdef USE_SMQ
+            SMQ::process();
+        #endif
+        }
+    #ifdef USE_LVGL_DISPLAY
+        statusDisplay.refresh();
+    #endif
         vTaskDelay(1);
     }
 }
@@ -875,23 +903,5 @@ void eventLoopTask(void* )
 
 void loop()
 {
-#ifdef USE_WIFI
-    if (wifiActive)
-    {
-    #ifdef USE_OTA
-        ArduinoOTA.handle();
-    #endif
-    #ifdef USE_WIFI_WEB
-        webServer.handle();
-    #endif
-    }
-    if (remoteActive)
-    {
-    #ifdef USE_SMQ
-        SMQ::process();
-    #endif
-    }
-#else
     mainLoop();
-#endif
 }
