@@ -28,7 +28,7 @@ Password: Astromech
 
 You can and should change this using the web interface. The default web address of the firmware is http://192.168.4.1
 
-The Serial12 TTL header is by default a Marcduino serial command receiver running at 9600 baud. It will forward any serial data to Serial2 at 9600 baud. Allowing you to daisy chain the AstroPixels board with other Marcdunio compatible serial devices.
+The Serial2 TTL header is by default a Marcduino serial command receiver running at 9600 baud. It will forward any serial data to Serial2 at 9600 baud. Allowing you to daisy chain the AstroPixels board with other Marcdunio compatible serial devices.
 
 **********
 
