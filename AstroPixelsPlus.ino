@@ -1,4 +1,4 @@
-/*****
+/**
  * 
  * AstroPixelsPlus sketch operates as a I2C master that can optionally be connected to one or more
  * Adafruit PCA9685 servo controllers to control dome panels. The sketch also provides serial commands
@@ -6,7 +6,7 @@
  * 
  */
 
-// Support for RSeries Logic Engine FLD and/or RLD lights
+// Support for RSeries Logic Engine FLD and/or RLD lights (requires FastLED library)
 // Define USE_RSERIES_FLD to enable support for RSeries FLD
 //#define USE_RSERIES_FLD
 // Define USE_RSERIES_RLD to enable support for RSeries RLD
@@ -16,9 +16,6 @@
 
 #if defined(USE_RSERIES_FLD) || defined(USE_RSERIES_RLD) || defined(USE_RSERIES_RLD_CURVED)
 // RSeries logics require FastLED
-// #if defined(ESP_ARDUINO_VERSION_MAJOR) && ESP_ARDUINO_VERSION_MAJOR >= 2)
-// #error FastLED
-// #endif
 #define USE_LEDLIB 0
 #endif
 
@@ -207,11 +204,21 @@ AstroPixelFLD<PIN_FRONT_LOGIC> FLD(LogicEngineFLDDefault, 1);
 AstroPixelFrontPSI<PIN_FRONT_PSI> frontPSI(LogicEngineFrontPSIDefault, 4);
 AstroPixelRearPSI<PIN_REAR_PSI> rearPSI(LogicEngineRearPSIDefault, 5);
 
-HoloLights frontHolo(PIN_FRONT_HOLO, HoloLights::kRGB);
-HoloLights rearHolo(PIN_REAR_HOLO, HoloLights::kRGB);
-HoloLights topHolo(PIN_TOP_HOLO, HoloLights::kRGB);
+#if USE_HOLO_TEMPLATE
+HoloLights<PIN_FRONT_HOLO, NEO_GRB> frontHolo(1);
+HoloLights<PIN_REAR_HOLO, NEO_GRB> rearHolo(2);
+HoloLights<PIN_TOP_HOLO, NEO_GRB> topHolo(3);
+#else
+HoloLights frontHolo(PIN_FRONT_HOLO, HoloLights::kRGB, 1);
+HoloLights rearHolo(PIN_REAR_HOLO, HoloLights::kRGB, 2);
+HoloLights topHolo(PIN_TOP_HOLO, HoloLights::kRGB, 3);
+#endif
 
+//#if USE_FIRESTRIP_TEMPLATE
+// FireStrip<PIN_AUX4> fireStrip;
+//#else
 // FireStrip fireStrip(PIN_AUX4);
+//#endif
 // BadMotivator badMotivator(PIN_AUX5);
 
 // LedControlMAX7221<5> ledChain1(CBI_DATAIN_PIN, CBI_CLOCK_PIN, CBI_LOAD_PIN);
