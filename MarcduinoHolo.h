@@ -377,3 +377,53 @@ MARCDUINO_ACTION(TopHoloNod, *HN03, ({
 }))
 
 ////////////////
+
+MARCDUINO_ACTION(MDFrontHoloOn, @6T1, ({
+    // Front Holo Dim cycle random color
+    CommandEvent::process(F("HPF0040"));
+}))
+
+////////////////
+
+MARCDUINO_ACTION(MDTopHoloOn, @7T1, ({
+    // Top Holo Dim cycle random color
+    CommandEvent::process(F("HPT0040"));
+}))
+
+////////////////
+
+MARCDUINO_ACTION(MDRearHoloOn, @8T1, ({
+    // Rear Holo Dim cycle random color
+    CommandEvent::process(F("HPR0040"));
+}))
+
+////////////////
+
+MARCDUINO_ACTION(MDFrontHoloOff, @6T1, ({
+    // Front Holo Off
+    CommandEvent::process(F("HPF0000"));
+}))
+
+////////////////
+
+MARCDUINO_ACTION(MDTopHoloOff, @7T1, ({
+    // Top Holo Off
+    CommandEvent::process(F("HPT0000"));
+}))
+
+////////////////
+
+MARCDUINO_ACTION(MDRearHoloOff, @8T1, ({
+    // Rear Holo Off
+    CommandEvent::process(F("HPR0000"));
+}))
+
+////////////////
+
+MARCDUINO_ACTION(HoloCommand, @HP, ({
+    char sHoloCommand[64];
+    snprintf(sHoloCommand, sizeof(sHoloCommand), "HP%s", Marcduino::getCommand());
+    CommandEvent::process(sHoloCommand);
+}))
+
+////////////////

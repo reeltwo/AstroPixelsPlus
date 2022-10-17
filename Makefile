@@ -9,7 +9,7 @@ ESP32_PARTSCHEME=min_spiffs
 ESP32_FLASHSIZE=16M
 GITHUB_REPOS= \
 reeltwo/Reeltwo \
-adafruit/Adafruit_NeoPixel
+adafruit/Adafruit_NeoPixel \
 FastLED/FastLED
 
 include ../Arduino.mk

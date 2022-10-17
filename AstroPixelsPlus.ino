@@ -746,12 +746,41 @@ MARCDUINO_ACTION(DirectCommand, ~RT, ({
 
 ////////////////
 
-MARCDUINO_ACTION(WifiByeBye, #WIBYE, ({
+MARCDUINO_ACTION(MDDirectCommand, @AP, ({
+    // Direct ReelTwo command
+    CommandEvent::process(Marcduino::getCommand());
+}))
+
+////////////////
+
+MARCDUINO_ACTION(WifiToggle, #APWIFI, ({
 #ifdef USE_WIFI
-    if (wifiEnabled)
+    bool wifiSetting = wifiEnabled;
+    switch (*Marcduino::getCommand())
     {
-        preferences.putBool(PREFERENCE_WIFI_ENABLED, false);
-        DEBUG_PRINT("Disabling WiFi. ");
+        case '0':
+            wifiSetting = false;
+            break;
+        case '1':
+            wifiSetting = true;
+            break;
+        case '\0':
+            // Toggle WiFi
+            wifiSetting = !wifiSetting;
+            break;
+    }
+    if (wifiEnabled != wifiSetting)
+    {
+        if (wifiSetting)
+        {
+            preferences.putBool(PREFERENCE_WIFI_ENABLED, true);
+            DEBUG_PRINTLN("WiFi Enabled");
+        }
+        else
+        {
+            preferences.putBool(PREFERENCE_WIFI_ENABLED, false);
+            DEBUG_PRINTLN("WiFi Disabled");
+        }
         reboot();
     }
 #endif
@@ -759,25 +788,34 @@ MARCDUINO_ACTION(WifiByeBye, #WIBYE, ({
 
 ////////////////
 
-MARCDUINO_ACTION(WifiHiHi, #WIHI, ({
-#ifdef USE_WIFI
-    if (!wifiEnabled)
-    {
-        preferences.putBool(PREFERENCE_WIFI_ENABLED, true);
-        DEBUG_PRINT("Enabling WiFi. ");
-        reboot();
-    }
-#endif
-}))
-
-////////////////
-
-MARCDUINO_ACTION(RemoteByeBye, #WIREMOTEBYE, ({
+MARCDUINO_ACTION(RemoteToggle, #APREMOTE, ({
 #ifdef USE_DROID_REMOTE
-    if (remoteEnabled)
+    bool remoteSetting = remoteEnabled;
+    switch (*Marcduino::getCommand())
     {
-        preferences.putBool(PREFERENCE_REMOTE_ENABLED, false);
-        DEBUG_PRINT("Disabling droid remote. ");
+        case '0':
+            remoteSetting = false;
+            break;
+        case '1':
+            remoteSetting = true;
+            break;
+        case '\0':
+            // Toggle remote
+            remoteSetting = !remoteSetting;
+            break;
+    }
+    if (remoteEnabled != remoteSetting)
+    {
+        if (remoteSetting)
+        {
+            preferences.putBool(PREFERENCE_REMOTE_ENABLED, true);
+            DEBUG_PRINTLN("Remote Enabled");
+        }
+        else
+        {
+            preferences.putBool(PREFERENCE_REMOTE_ENABLED, false);
+            DEBUG_PRINTLN("Remote Disabled");
+        }
         reboot();
     }
 #endif
@@ -785,25 +823,16 @@ MARCDUINO_ACTION(RemoteByeBye, #WIREMOTEBYE, ({
 
 ////////////////
 
-MARCDUINO_ACTION(RemoteHiHI, #WIREMOTEHI, ({
-#ifdef USE_DROID_REMOTE
-    if (!remoteEnabled)
-    {
-        preferences.putBool(PREFERENCE_REMOTE_ENABLED, true);
-        DEBUG_PRINT("Enabling droid remote. ");
-        reboot();
-    }
-#endif
-}))
-
-////////////////
-
-MARCDUINO_ACTION(ClearPrefs, #WZERO, ({
-#ifdef USE_DROID_REMOTE
+MARCDUINO_ACTION(ClearPrefs, #APZERO, ({
     preferences.clear();
     DEBUG_PRINT("Clearing preferences. ");
     reboot();
-#endif
+}))
+
+////////////////
+
+MARCDUINO_ACTION(Restart, #APRESTART, ({
+    reboot();
 }))
 
 ////////////////

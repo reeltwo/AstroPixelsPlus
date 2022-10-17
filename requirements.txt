@@ -3,4 +3,5 @@
 <ul>
 <li>https://github.com/reeltwo/Reeltwo</li>
 <li>https://github.com/adafruit/Adafruit_NeoPixel</li>
+<li>https://github.com/FastLED/FastLED</li>
 </ul>

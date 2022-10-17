@@ -32,6 +32,22 @@ The Serial2 TTL header is by default a Marcduino serial command receiver running
 
 **********
 
+# Configuration Commands Supported
+
+## #APWIFI[0|1] - Change WiFi Setting
+  #APWIFI - Toggle WiFi
+  #APWIFI0 - WiFi Off
+  #APWIFI1 - WiFi On
+
+## #APREMOTE[0|1] - Change Droid Remote Setting
+  #APREMOTE - Toggle Droid Remote Support
+  #APREMOTE0 - Droid Remote Support Off
+  #APREMOTE1 - Droid Remote Support On
+
+## #APZERO - Clear All Preference including WiFi Settings
+
+## #APRESTART - Restart AstroPixels
+
 # Marcduino Commands Supported
 
 The prefix @ is optional and is ignored. All Marcduino commands are terminated by \r (carriage return).
@@ -210,7 +226,7 @@ The prefix @ is optional and is ignored. All Marcduino commands are terminated b
 
 Additional you can select a sequence to run by sending:
 
-~RTLE followed by a integer in this format LEECSNN
+@APLE followed by a integer in this format LEECSNN
 
 ## L - the logic designator - if not provided, defaults to 0 (all)
    0 - All  
@@ -267,30 +283,30 @@ Additional you can select a sequence to run by sending:
 
  ## Some sequence examples:
  Note: Leading 0s drop off as these are long ints  
- Solid Red:  ~RTLE51000  
- Solid Orange: ~RTLE52000  
- Solid Yellow:  ~RTLE53000  
- Solid Green:  ~RTLE54000  
- Solid Cyan:  ~RTLE55000  
- Solid Blue:  ~RTLE56000  
- Solid Purple:  ~RTLE57000  
- Solid Magenta:  ~RTLE58000  
- Solid Pink: ~RTLE59000  
- Alarm (default):  ~RTLE10500  
- Failure: ~RTLE20000  
- Leia: ~RTLE30000  
- March:  ~RTLE40500  
- March (Red Only):  ~RTLE41500  
- Flash (Yellow): ~RTLE63500  
- Color Swap (pink): ~RTLE99500  
- Rainbow: ~RTLE100500  
- Red Alert: ~RTLE111300  
- Mic Bright (Green): ~RTLE124200  
- Mic Rainbow (Cyan): ~RTLE135000  
+ Solid Red:  @APLE51000  
+ Solid Orange: @APLE52000  
+ Solid Yellow:  @APLE53000  
+ Solid Green:  @APLE54000  
+ Solid Cyan:  @APLE55000  
+ Solid Blue:  @APLE56000  
+ Solid Purple:  @APLE57000  
+ Solid Magenta:  @APLE58000  
+ Solid Pink: @APLE59000  
+ Alarm (default):  @APLE10500  
+ Failure: @APLE20000  
+ Leia: @APLE30000  
+ March:  @APLE40500  
+ March (Red Only):  @APLE41500  
+ Flash (Yellow): @APLE63500  
+ Color Swap (pink): @APLE99500  
+ Rainbow: @APLE100500  
+ Red Alert: @APLE111300  
+ Mic Bright (Green): @APLE124200  
+ Mic Rainbow (Cyan): @APLE135000  
 
- ~RTLE54008 - solid green for 8 seconds  
- ~RTLE63315 - flashing yellow at slightly higher speed for 15 seconds  
- ~RTLE30008 - leia effect for only 8 seconds  
+ @APLE54008 - solid green for 8 seconds  
+ @APLE63315 - flashing yellow at slightly higher speed for 15 seconds  
+ @APLE30008 - leia effect for only 8 seconds  
 
 **********
 
@@ -299,4 +315,5 @@ Additional you can select a sequence to run by sending:
 <ul>
 <li>https://github.com/reeltwo/Reeltwo</li>
 <li>https://github.com/adafruit/Adafruit_NeoPixel</li>
+<li>https://github.com/FastLED/FastLED</li>
 </ul>

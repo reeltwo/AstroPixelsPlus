@@ -133,33 +133,29 @@ MARCDUINO_ACTION(MarchSequence, @0T11, ({
 
 ////////////////
 
-static char sMTFLDText[32];
-static char sMBFLDText[32];
-static char sMFLDText[65];
-static char sMRLDText[64];
+static char sMTFLDText[128];
+static char sMBFLDText[128];
+static char sMFLDText[256];
+static char sMRLDText[256];
 
 MARCDUINO_ACTION(TFLDScrollTextLeft, @1M, ({
-    strcpy(sMTFLDText, Marcduino::getCommand());
-    strcpy(sMFLDText, sMTFLDText);
-    strcat(sMFLDText, "\n");
-    strcat(sMFLDText, sMBFLDText);
+    snprintf(sMTFLDText, sizeof(sMTFLDText), "%s", Marcduino::getCommand());
+    snprintf(sMFLDText, sizeof(sMFLDText), "%s\n%s", sMTFLDText, sMBFLDText);
     FLD.selectScrollTextLeft(sMFLDText, FLD.randomColor());
 }))
 
 ////////////////
 
 MARCDUINO_ACTION(BFLDScrollTextLeft, @2M, ({
-    strcpy(sMBFLDText, Marcduino::getCommand());
-    strcpy(sMFLDText, sMTFLDText);
-    strcat(sMFLDText, "\n");
-    strcat(sMFLDText, sMBFLDText);
+    snprintf(sMBFLDText, sizeof(sMBFLDText), "%s", Marcduino::getCommand());
+    snprintf(sMFLDText, sizeof(sMFLDText), "%s\n%s", sMTFLDText, sMBFLDText);
     FLD.selectScrollTextLeft(sMFLDText, FLD.randomColor());
 }))
 
 ////////////////
 
 MARCDUINO_ACTION(RLDScrollTextLeft, @3M, ({
-    strcpy(sMRLDText, Marcduino::getCommand());
+    snprintf(sMRLDText, sizeof(sMRLDText), "%s", Marcduino::getCommand());
     RLD.selectScrollTextLeft(sMRLDText, RLD.randomColor());
 }))
 
