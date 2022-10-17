@@ -399,21 +399,21 @@ MARCDUINO_ACTION(MDRearHoloOn, @8T1, ({
 
 ////////////////
 
-MARCDUINO_ACTION(MDFrontHoloOff, @6T1, ({
+MARCDUINO_ACTION(MDFrontHoloOff, @6D, ({
     // Front Holo Off
     CommandEvent::process(F("HPF0000"));
 }))
 
 ////////////////
 
-MARCDUINO_ACTION(MDTopHoloOff, @7T1, ({
+MARCDUINO_ACTION(MDTopHoloOff, @7D, ({
     // Top Holo Off
     CommandEvent::process(F("HPT0000"));
 }))
 
 ////////////////
 
-MARCDUINO_ACTION(MDRearHoloOff, @8T1, ({
+MARCDUINO_ACTION(MDRearHoloOff, @8D, ({
     // Rear Holo Off
     CommandEvent::process(F("HPR0000"));
 }))

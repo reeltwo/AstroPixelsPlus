@@ -303,6 +303,7 @@ Additional you can select a sequence to run by sending:
  Red Alert: @APLE111300  
  Mic Bright (Green): @APLE124200  
  Mic Rainbow (Cyan): @APLE135000  
+ Fire: @APLE235000  
 
  @APLE54008 - solid green for 8 seconds  
  @APLE63315 - flashing yellow at slightly higher speed for 15 seconds  
