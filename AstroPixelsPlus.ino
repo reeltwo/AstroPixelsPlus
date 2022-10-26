@@ -37,7 +37,7 @@
 
 // Replace with your network credentials
 #ifdef USE_WIFI
-#define REMOTE_ENABLED       false    // default disabled
+#define REMOTE_ENABLED       true     // default disabled
 #define WIFI_ENABLED         true     // default enabled
 // Set these to your desired WiFi credentials.
 #define WIFI_AP_NAME         "AstroPixels"
@@ -64,6 +64,8 @@
 #define PREFERENCE_REMOTE_ENABLED       "remote"
 #define PREFERENCE_REMOTE_HOSTNAME      "rhost"
 #define PREFERENCE_REMOTE_SECRET        "rsecret"
+#define PREFERENCE_REMOTE_PAIRED        "rpaired"
+#define PREFERENCE_REMOTE_LMK           "rlmk"
 
 #define PREFERENCE_WIFI_ENABLED         "wifi"
 #define PREFERENCE_WIFI_SSID            "ssid"
@@ -363,6 +365,9 @@ void unmountFileSystems()
 void reboot()
 {
     DEBUG_PRINTLN("Restarting...");
+#ifdef USE_DROID_REMOTE
+    DisconnectRemote();
+#endif
     unmountFileSystems();
     preferences.end();
     delay(1000);
@@ -491,6 +496,12 @@ CommandScreenHandlerSMQ sDisplay;
 #include "WebPages.h"
 #endif
 
+#ifdef USE_DROID_REMOTE
+static bool sRemoteConnected;
+static bool sRemoteConnecting;
+static SMQAddress sRemoteAddress;
+#endif
+
 ////////////////////////////////
 
 void scan_i2c()
@@ -609,7 +620,68 @@ void setup()
         if (SMQ::init(preferences.getString(PREFERENCE_REMOTE_HOSTNAME, SMQ_HOSTNAME),
                         preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_SECRET)))
         {
-            printf("Droid Remote Enabled\n");
+            SMQLMK key;
+            if (preferences.getBytes(PREFERENCE_REMOTE_LMK, &key, sizeof(SMQLMK)) == sizeof(SMQLMK))
+            {
+                SMQ::setLocalMasterKey(&key);
+            }
+
+            SMQAddressKey pairedHosts[SMQ_MAX_PAIRED_HOSTS];
+            size_t pairedHostsSize = preferences.getBytesLength(PREFERENCE_REMOTE_PAIRED);
+            unsigned numHosts = pairedHostsSize / sizeof(pairedHosts[0]);
+            printf("numHosts: %d\n", numHosts);
+            Serial.print("WiFi.macAddress() : "); Serial.println(WiFi.macAddress());
+            if (numHosts != 0)
+            {
+                if (preferences.getBytes(PREFERENCE_REMOTE_PAIRED, pairedHosts, pairedHostsSize) == pairedHostsSize)
+                {
+                    SMQ::addPairedHosts(numHosts, pairedHosts);
+                }
+            }
+            printf("Droid Remote Enabled %s:%s\n",
+                preferences.getString(PREFERENCE_REMOTE_HOSTNAME, SMQ_HOSTNAME).c_str(),
+                    preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_SECRET).c_str());
+            SMQ::setHostPairingCallback([](SMQHost* host) {
+                if (host == nullptr)
+                {
+                    printf("Pairing timed out\n");
+                }
+                else //if (host->hasTopic("LCD"))
+                {
+                    switch (SMQ::masterKeyExchange(&host->fLMK))
+                    {
+                        case -1:
+                            printf("Pairing Stopped\n");
+                            SMQ::stopPairing();
+                            return;
+                        case 1:
+                            // Save new master key
+                            SMQLMK lmk;
+                            SMQ::getLocalMasterKey(&lmk);
+                            printf("Saved new master key\n");
+                            preferences.putBytes(PREFERENCE_REMOTE_LMK, &lmk, sizeof(lmk));
+                            break;
+                        case 0:
+                            // We had the master key
+                            break;
+                    }
+                    printf("Pairing: %s [%s]\n", host->getHostName().c_str(), host->fLMK.toString().c_str());
+                    if (SMQ::addPairedHost(&host->fAddr, &host->fLMK))
+                    {
+                        SMQAddressKey pairedHosts[SMQ_MAX_PAIRED_HOSTS];
+                        unsigned numHosts = SMQ::getPairedHostCount();
+                        if (SMQ::getPairedHosts(pairedHosts, numHosts) == numHosts)
+                        {
+                            preferences.putBytes(PREFERENCE_REMOTE_PAIRED,
+                                pairedHosts, numHosts*sizeof(pairedHosts[0]));
+                            printf("Pairing Success\n");
+                        }
+                    }
+                    printf("Pairing Stopped\n");
+                    SMQ::stopPairing();
+                }
+            });
+
             SMQ::setHostDiscoveryCallback([](SMQHost* host) {
                 if (host->hasTopic("LCD"))
                 {
@@ -618,7 +690,13 @@ void setup()
             });
 
             SMQ::setHostLostCallback([](SMQHost* host) {
-                printf("Lost: %s\n", host->getHostName().c_str());
+                printf("Lost: %s [%s] [%s]\n", host->getHostName().c_str(), host->getHostAddress().c_str(),
+                    sRemoteAddress.toString().c_str());
+                if (sRemoteAddress.equals(host->fAddr.fData))
+                {
+                    printf("DISABLING REMOTE\n");
+                    sDisplay.setEnabled(false);
+                }
             });
         }
         else
@@ -651,9 +729,6 @@ void setup()
         }
     #endif
         wifiAccess.notifyWifiConnected([](WifiAccess &wifi) {
-        #ifdef STATUSLED_PIN
-            statusLED.setMode(sCurrentMode = kWifiMode);
-        #endif
             Serial.print("Connect to http://"); Serial.println(wifi.getIPAddress());
         #ifdef USE_MDNS
             // No point in setting up mDNS if R2 is the access point
@@ -823,6 +898,51 @@ MARCDUINO_ACTION(RemoteToggle, #APREMOTE, ({
 
 ////////////////
 
+MARCDUINO_ACTION(RemoteName, #APRNAME, ({
+    String newSecret = String(Marcduino::getCommand());
+    if (preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_HOSTNAME) != newSecret)
+    {
+        preferences.putString(PREFERENCE_REMOTE_SECRET, newSecret);
+        printf("Changed.\n");
+        reboot();
+    }
+}))
+
+////////////////
+
+MARCDUINO_ACTION(RemoteSecret, #APRSECRET, ({
+    String newSecret = String(Marcduino::getCommand());
+    if (preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_HOSTNAME) != newSecret)
+    {
+        preferences.putString(PREFERENCE_REMOTE_SECRET, newSecret);
+        printf("Changed.\n");
+        reboot();
+    }
+}))
+
+////////////////
+
+MARCDUINO_ACTION(RemotePair, #APPAIR, ({
+    printf("Pairing Started ...\n");
+    SMQ::startPairing();
+}))
+
+////////////////
+
+MARCDUINO_ACTION(RemoteUnpair, #APUNPAIR, ({
+    if (preferences.remove(PREFERENCE_REMOTE_PAIRED))
+    {
+        printf("Unpairing Success...\n");
+        reboot();
+    }
+    else
+    {
+        printf("Not Paired...\n");
+    }
+}))
+
+////////////////
+
 MARCDUINO_ACTION(ClearPrefs, #APZERO, ({
     preferences.clear();
     DEBUG_PRINT("Clearing preferences. ");
@@ -861,7 +981,30 @@ SMQMESSAGE(SELECT, {
     sDisplay.setEnabled(true);
     sDisplay.switchToScreen(kMainScreen);
     sMainScreen.init();
+    sRemoteConnected = true;
+    sRemoteConnecting = true;
+    sRemoteAddress = SMQ::messageSender();
 })
+#endif
+
+#ifdef USE_DROID_REMOTE
+static void DisconnectRemote()
+{
+#ifdef USE_SMQ
+    printf("DisconnectRemote : %d\n", sRemoteConnected);
+    if (sRemoteConnected)
+    {
+        if (SMQ::sendTopic("EXIT", "Remote"))
+        {
+            SMQ::sendString("addr", SMQ::getAddress());
+            SMQ::sendEnd();
+            printf("SENT EXIT\n");
+            sRemoteConnected = false;
+            sDisplay.setEnabled(false);
+        }
+    }
+#endif
+}
 #endif
 
 ////////////////
