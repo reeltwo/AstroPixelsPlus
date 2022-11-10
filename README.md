@@ -13,6 +13,10 @@ https://github.com/reeltwo/AstroPixelsPlus/wiki
 
 **********
 
+# Playground
+
+[![Logic Engine](https://thumbs.wokwi.com/projects/347975094870475347/thumbnail.jpg?tile&amp;t=1629669534812&amp;dark=1)](https://wokwi.com/projects/347975094870475347)
+
 # REQUIREMENTS
 
 Arduino IDE: https://www.arduino.cc/en/Main/Software  (1.8.13 or higher)
