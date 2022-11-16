@@ -5,6 +5,8 @@
 *.sublime-workspace
 ._*
 .build
+.pio
+.vscode
 .lib
 *build_version.h
 .DS_Store
