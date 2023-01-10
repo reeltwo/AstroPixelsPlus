@@ -612,6 +612,20 @@ void setup()
     RLD.selectScrollTextLeft("... AstroPixels ....", LogicEngineRenderer::kBlue, 0, 15);
     FLD.selectScrollTextLeft("... R2D2 ...", LogicEngineRenderer::kRed, 0, 15);
 
+    // Assign servos to holo projectors
+    frontHolo.assignServos(&servoDispatch, 13, 14);
+    // Second PCA9685 controller
+    // { 16, 800, 2200, HOLO_HSERVO },                /* 13: horizontal front holo */
+    // { 17, 800, 2200, HOLO_VSERVO },                /* 14: vertical front holo */
+
+    topHolo.assignServos(&servoDispatch, 15, 16);
+    // { 18, 800, 2200, HOLO_HSERVO },                /* 15: horizontal top holo */
+    // { 19, 800, 2200, HOLO_VSERVO },                /* 16: vertical top holo */
+
+    rearHolo.assignServos(&servoDispatch, 17, 18);
+    // { 20, 800, 2200, HOLO_VSERVO },                /* 17: vertical rear holo */
+    // { 21, 800, 2200, HOLO_HSERVO },                /* 18: horizontal rear holo */
+
 #ifdef USE_WIFI
     if (remoteEnabled)
     {
