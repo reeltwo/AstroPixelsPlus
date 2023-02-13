@@ -7,6 +7,13 @@ You can order AstroPixels boards here:
 
 https://shop.we-make-things.co.uk/index.php?route=product/product&product_id=56
 
+# Web Based Installer
+
+Install pre-built firmware directly onto your ESP board using this web based installer.
+https://reeltwo.github.io/AstroPixels-Installer/
+
+*Requires Chrome or Edge.*
+
 Check out the Wiki for this firmware:
 
 https://github.com/reeltwo/AstroPixelsPlus/wiki
