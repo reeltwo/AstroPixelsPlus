@@ -328,4 +328,5 @@ Additional you can select a sequence to run by sending:
 <li>https://github.com/reeltwo/Reeltwo</li>
 <li>https://github.com/adafruit/Adafruit_NeoPixel</li>
 <li>https://github.com/FastLED/FastLED</li>
+<li>https://github.com/DFRobot/DFRobotDFPlayerMini</li>
 </ul>

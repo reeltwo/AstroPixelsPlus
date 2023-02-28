@@ -80,6 +80,14 @@
 #define PREFERENCE_MARCWIFI_ENABLED     "mwifi"
 #define PREFERENCE_MARCWIFI_SERIAL_PASS "mwifipass"
 
+#define PREFERENCE_MARCSOUND            "msound"
+#define PREFERENCE_MARCSOUND_SERIAL     "msoundser"
+#define PREFERENCE_MARCSOUND_VOLUME     "mvolume"
+#define PREFERENCE_MARCSOUND_STARTUP    "msoundstart"
+#define PREFERENCE_MARCSOUND_RANDOM     "mrandom"
+#define PREFERENCE_MARCSOUND_RANDOM_MIN "mrandommin"
+#define PREFERENCE_MARCSOUND_RANDOM_MAX "mrandommax"
+
 ////////////////////////////////
 
 #define CONSOLE_BUFFER_SIZE     300
@@ -132,6 +140,13 @@
 #define MARC_SERIAL_ENABLED             true
 #define MARC_WIFI_ENABLED               true
 #define MARC_WIFI_SERIAL_PASS           true
+#define MARC_SOUND_PLAYER               MarcSound::kDisabled
+#define MARC_SOUND_SERIAL               0
+#define MARC_SOUND_VOLUME               500  // 0 - 1000
+#define MARC_SOUND_STARTUP              255
+#define MARC_SOUND_RANDOM               true
+#define MARC_SOUND_RANDOM_MIN           5000
+#define MARC_SOUND_RANDOM_MAX           30000
 
 #include "wifi/WifiAccess.h"
 
@@ -186,6 +201,13 @@
 #define CBI_DATAIN_PIN      PIN_AUX3
 #define CBI_CLOCK_PIN       PIN_AUX2
 #define CBI_LOAD_PIN        PIN_AUX1
+
+////////////////////////////////
+
+#define SOUND_SERIAL Serial1
+#define SOUND_RX_PIN PIN_AUX4
+#define SOUND_TX_PIN PIN_AUX5
+#define SOUND_BAUD   9600
 
 ////////////////////////////////
 
@@ -296,6 +318,11 @@ ServoDispatchPCA9685<SizeOfArray(servoSettings)> servoDispatch(servoSettings);
 ServoSequencer servoSequencer(servoDispatch);
 AnimationPlayer player(servoSequencer);
 MarcduinoSerial<> marcduinoSerial(player);
+
+/////////////////////////////////////////////////////////////////////////
+
+#include "MarcduinoSound.h"
+MarcSound::Module sSoundPlayer;
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -608,6 +635,19 @@ void setup()
         sDisplay.setRotation(2);
     }
 #endif
+    MarcSound::Module soundPlayer = (MarcSound::Module)preferences.getInt(PREFERENCE_MARCSOUND, MARC_SOUND_PLAYER);
+    int soundStartup = preferences.getInt(PREFERENCE_MARCSOUND_STARTUP, MARC_SOUND_STARTUP);
+    if (soundPlayer != MarcSound::kDisabled)
+    {
+        SOUND_SERIAL.begin(SOUND_BAUD, SERIAL_8N1, SOUND_RX_PIN, SOUND_TX_PIN);
+        // Need to wait 3 seconds for sound modules to power up
+        delay(3000);
+        if (!sMarcSound.begin(soundPlayer, SOUND_SERIAL, soundStartup))
+        {
+            DEBUG_PRINTLN("FAILED TO INITALIZE SOUND MODULE");
+        }
+        sMarcSound.setVolume(preferences.getInt(PREFERENCE_MARCSOUND_VOLUME, MARC_SOUND_VOLUME) / 1000.0);
+    }
 
     RLD.selectScrollTextLeft("... AstroPixels ....", LogicEngineRenderer::kBlue, 0, 15);
     FLD.selectScrollTextLeft("... R2D2 ...", LogicEngineRenderer::kRed, 0, 15);
@@ -824,6 +864,11 @@ void setup()
           0);
 #endif
     DEBUG_PRINTLN("Ready");
+    sMarcSound.playStartSound();
+    sMarcSound.setRandomMin(preferences.getInt(PREFERENCE_MARCSOUND_RANDOM_MIN, MARC_SOUND_RANDOM_MIN));
+    sMarcSound.setRandomMax(preferences.getInt(PREFERENCE_MARCSOUND_RANDOM_MAX, MARC_SOUND_RANDOM_MAX));
+    if (preferences.getInt(PREFERENCE_MARCSOUND_RANDOM, MARC_SOUND_RANDOM))
+        sMarcSound.startRandomInSeconds(13);
 }
 
 ////////////////
@@ -1042,6 +1087,7 @@ I2CReceiverBase<CONSOLE_BUFFER_SIZE> i2cReceiver(USE_I2C_ADDRESS, [](char* cmd) 
 void mainLoop()
 {
     AnimatedEvent::process();
+    sMarcSound.idle();
 #ifdef USE_MENUS
     sDisplay.process();
 #endif

@@ -23,6 +23,7 @@ WMenuData mainMenu[] = {
 WMenuData setupMenu[] = {
     { "Home", "/" },
     { "Serial", "/serial" },
+    { "Sound", "/sound" },
     { "WiFi", "/wifi" },
     { "Remote", "/remote" },
     { "Firmware", "/firmware" },
@@ -212,6 +213,97 @@ WElement serialContents[] = {
 
 ////////////////////////////////
 
+String soundPlayer[] = {
+    "Disabled",
+    "MP3 Trigger",
+    "DFMiniPlayer",
+    "HCR"
+};
+
+String soundSerial[] = {
+    "AUX4/AUX5",
+    "Serial2"
+};
+
+int marcSoundPlayer;
+int marcSoundSerial;
+int marcSoundVolume;
+int marcSoundStartup;
+bool marcSoundRandom;
+int marcSoundRandomMin;
+int marcSoundRandomMax;
+
+WElement soundContents[] = {
+    WSelect("Sound Player", "soundPlayer",
+        soundPlayer, SizeOfArray(soundPlayer),
+        []() { return (marcSoundPlayer = preferences.getInt(PREFERENCE_MARCSOUND, MARC_SOUND_PLAYER)); },
+        [](int val) { marcSoundPlayer = val; } ),
+    WVerticalAlign(),
+    WSelect("Sound Serial", "soundSerial",
+        soundSerial, SizeOfArray(soundSerial),
+        []() { return (marcSoundSerial = (preferences.getInt(PREFERENCE_MARCSOUND_SERIAL, MARC_SOUND_SERIAL)) == 2400) ? 0 : 1; },
+        [](int val) { marcSoundSerial = val; } ),
+    WVerticalAlign(),
+    WSlider("Sound Volume", "soundVolume", 0, 1000,
+        []() { return (marcSoundVolume = preferences.getInt(PREFERENCE_MARCSOUND_VOLUME, MARC_SOUND_VOLUME)); },
+        [](int val) {
+            marcSoundVolume = val;
+            sMarcSound.setVolume(marcSoundVolume / 1000.0);
+        } ),
+    WVerticalAlign(),
+    WTextFieldInteger("Sound Startup", "soundStartup",
+        []()->String { return String(marcSoundStartup = preferences.getInt(PREFERENCE_MARCSOUND_STARTUP, MARC_SOUND_STARTUP)); },
+        [](String val) { marcSoundStartup = val.toInt(); }),
+    WVerticalAlign(),
+    WCheckbox("Random Sound", "soundRandom",
+        []() { return (marcSoundRandom = (preferences.getBool(PREFERENCE_MARCSOUND_RANDOM, MARC_SOUND_RANDOM))); },
+        [](bool val) { marcSoundRandom = val; } ),
+    WVerticalAlign(),
+    WTextFieldInteger("Random Min Millis", "soundRandomMin",
+        []()->String { return String(marcSoundRandomMin = preferences.getInt(PREFERENCE_MARCSOUND_RANDOM_MIN, MARC_SOUND_RANDOM_MIN)); },
+        [](String val) { marcSoundRandomMin = val.toInt(); }),
+    WVerticalAlign(),
+    WTextFieldInteger("Random Max Millis", "soundRandomMax",
+        []()->String { return String(marcSoundRandomMax = preferences.getInt(PREFERENCE_MARCSOUND_RANDOM_MAX, MARC_SOUND_RANDOM_MAX)); },
+        [](String val) { marcSoundRandomMax = val.toInt(); }),
+    WVerticalAlign(),
+    WButton("Save", "save", []() {
+        preferences.putInt(PREFERENCE_MARCSOUND, marcSoundPlayer);
+        preferences.putInt(PREFERENCE_MARCSOUND_SERIAL, marcSoundSerial);
+        preferences.putInt(PREFERENCE_MARCSOUND_VOLUME, marcSoundVolume);
+        preferences.putInt(PREFERENCE_MARCSOUND_STARTUP, marcSoundStartup);
+        preferences.putBool(PREFERENCE_MARCSOUND_RANDOM, marcSoundRandom);
+        preferences.putInt(PREFERENCE_MARCSOUND_RANDOM_MIN, marcSoundRandomMin);
+        preferences.putInt(PREFERENCE_MARCSOUND_RANDOM_MAX, marcSoundRandomMax);
+        if (marcSoundRandom)
+        {
+            sMarcSound.startRandom();
+        }
+        else
+        {
+            sMarcSound.stopRandom();
+        }
+        sMarcSound.setVolume(marcSoundVolume / 1000.0);
+        // Flip values around if min is greater than max
+        if (marcSoundRandomMin > marcSoundRandomMax)
+        {
+            int t = marcSoundRandomMin;
+            marcSoundRandomMin = marcSoundRandomMax;
+            marcSoundRandomMax = t;
+        }
+        sMarcSound.setRandomMin(marcSoundRandomMin);
+        sMarcSound.setRandomMax(marcSoundRandomMax);
+    }),
+    WHorizontalAlign(),
+    WButton("Back", "back", "/setup"),
+    WHorizontalAlign(),
+    WButton("Home", "home", "/"),
+    WVerticalAlign(),
+    rseriesSVG
+};
+
+////////////////////////////////
+
 String wifiSSID;
 String wifiPass;
 bool wifiAP;
@@ -313,6 +405,7 @@ WPage pages[] = {
       WPage("/logics", logicsContents, SizeOfArray(logicsContents)),
     WPage("/setup", setupContents, SizeOfArray(setupContents)),
       WPage("/serial", serialContents, SizeOfArray(serialContents)),
+      WPage("/sound", soundContents, SizeOfArray(soundContents)),
       WPage("/wifi", wifiContents, SizeOfArray(wifiContents)),
       WPage("/remote", remoteContents, SizeOfArray(remoteContents)),
       WPage("/firmware", firmwareContents, SizeOfArray(firmwareContents)),

@@ -10,28 +10,28 @@ MARCDUINO_ACTION(ScreamSequence, :SE01, ({
     CommandEvent::process("LE3010003");
     // Send command to front logics
     CommandEvent::process("LE1010003");
-    Marcduino::send(F("$S"));
+    sMarcSound.handleCommand("$S");
     SEQUENCE_PLAY_ONCE(servoSequencer, SeqPanelAllOpenClose, ALL_DOME_PANELS_MASK);
 }))
 
 ////////////////
 
 MARCDUINO_ACTION(WaveSequence, :SE02, ({
-    Marcduino::send(F("$213"));
+    sMarcSound.handleCommand("$213");
     SEQUENCE_PLAY_ONCE(servoSequencer, SeqPanelWave, ALL_DOME_PANELS_MASK);
 }))
 
 ////////////////
 
 MARCDUINO_ACTION(SmirkWaveSequence, :SE03, ({
-    Marcduino::send(F("$34"));
+    sMarcSound.handleCommand("$34");
     SEQUENCE_PLAY_ONCE(servoSequencer, SeqPanelWaveFast, ALL_DOME_PANELS_MASK);
 }))
 
 ////////////////
 
 MARCDUINO_ACTION(OpenCloseWaveSequence, :SE04, ({
-    Marcduino::send(F("$36"));
+    sMarcSound.handleCommand("$36");
     SEQUENCE_PLAY_ONCE(servoSequencer, SeqPanelOpenCloseWave, ALL_DOME_PANELS_MASK);
 }))
 
@@ -40,7 +40,7 @@ MARCDUINO_ACTION(OpenCloseWaveSequence, :SE04, ({
 MARCDUINO_ANIMATION(BeepCantinaSequence, :SE05)
 {
     DO_START()
-    DO_MARCDUINO(F("$c"))
+    DO_ONCE({ sMarcSound.handleCommand("$c"); })
     // Wait 1 second
     DO_COMMAND(F(
         // Fire logics
@@ -65,7 +65,7 @@ MARCDUINO_ANIMATION(ShortSequence, :SE06)
     // Logic engine alarm
     DO_COMMAND(F("LE105000"))
     // Play scream-3 and wait 500ms
-    DO_MARCDUINO_AND_WAIT(F("$623"), 500);
+    DO_ONCE_AND_WAIT({ sMarcSound.handleCommand("$623");}, 500);
     // Logic engine failure
     DO_COMMAND(F(
         // Logic engine failure (all)
@@ -112,7 +112,7 @@ MARCDUINO_ANIMATION(CantinaSequence, :SE07)
 {
     DO_START()
     // Play Orchestral Cantina
-    DO_MARCDUINO(F("$C"))
+    DO_ONCE({ sMarcSound.handleCommand("$C"); })
     // Wait 1 second
     DO_WAIT_SEC(1)
     DO_COMMAND(F(
@@ -135,7 +135,7 @@ MARCDUINO_ANIMATION(CantinaSequence, :SE07)
 MARCDUINO_ANIMATION(LeiaMessage, :SE08)
 {
     DO_START()
-    DO_MARCDUINO(F("$73"))
+    DO_ONCE({ sMarcSound.handleCommand("$73"); })
     DO_COMMAND_AND_WAIT(F(
         "LE3030045\n"
         "LE1030045\n"
@@ -153,7 +153,7 @@ MARCDUINO_ANIMATION(LeiaMessage, :SE08)
 MARCDUINO_ANIMATION(DiscoSequence, :SE09)
 {
     DO_START()
-    DO_MARCDUINO(F("$D"))
+    DO_ONCE({ sMarcSound.handleCommand("$D"); })
     DO_SEQUENCE(SeqPanelLongDisco, DOME_DANCE_PANELS_MASK)
     DO_ONCE({
         FLD.selectSequence(LogicEngineRenderer::RAINBOW);
@@ -174,7 +174,7 @@ MARCDUINO_ANIMATION(DiscoSequence, :SE09)
 MARCDUINO_ACTION(ScreamNoPanelSequence, :SE50, ({
     CommandEvent::process("LE3010003");
     CommandEvent::process("LE1010003");
-    Marcduino::send(F("$S"));
+    sMarcSound.handleCommand("$S");
 }))
 
 ////////////////
@@ -198,7 +198,7 @@ MARCDUINO_ACTION(SmirkWavePanelSequence, :SE53, ({
 ////////////////
 
 MARCDUINO_ACTION(OpenWaveSequence, :SE54, ({
-    Marcduino::send(F("$36"));
+    sMarcSound.handleCommand("$36");
     SEQUENCE_PLAY_ONCE(servoSequencer, SeqPanelOpenCloseWave, ALL_DOME_PANELS_MASK);
 }))
 
