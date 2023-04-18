@@ -626,7 +626,7 @@ MarcSound sMarcSound;
 
 MARCDUINO_ACTION(SoundCommand, $, ({
     const char* cmd = Marcduino::getCommand();
-    if (sMarcSound.handleCommand(cmd, true))
+    if (!sMarcSound.handleCommand(cmd, true))
     {
         printf("BAD SND CMD: $%s\n", cmd);
     }
