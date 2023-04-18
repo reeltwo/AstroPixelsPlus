@@ -241,7 +241,7 @@ WElement soundContents[] = {
     WVerticalAlign(),
     WSelect("Sound Serial", "soundSerial",
         soundSerial, SizeOfArray(soundSerial),
-        []() { return (marcSoundSerial = (preferences.getInt(PREFERENCE_MARCSOUND_SERIAL, MARC_SOUND_SERIAL)) == 2400) ? 0 : 1; },
+        []() { return (marcSoundSerial = preferences.getInt(PREFERENCE_MARCSOUND_SERIAL, MARC_SOUND_SERIAL)); },
         [](int val) { marcSoundSerial = val; } ),
     WVerticalAlign(),
     WSlider("Sound Volume", "soundVolume", 0, 1000,

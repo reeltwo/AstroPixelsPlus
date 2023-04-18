@@ -189,8 +189,8 @@ public:
                 break;
             case kMP3Trigger:
                 // send a 't'nnn number where nnn=file number
-                SOUND_SERIAL.write(MP3_PLAY_CMD);
-                SOUND_SERIAL.write(filenum);
+                sendMP3(MP3_PLAY_CMD);
+                sendMP3(filenum);
                 break;
             case kHCR:
             {
