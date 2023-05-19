@@ -1,11 +1,11 @@
 # AstroPixelsPlus Firmware
 Alternative firmware sketch for the AstroPixels boards
 
-![AstroPixels](https://shop.we-make-things.co.uk/image/cache/catalog/PXL_20220423_103859571%20(1)-500x500.jpg)
+![AstroPixels](https://we-make-things.co.uk/wp-content/uploads/2022/10/PXL_20220423_103855938-scaled.jpg)
 
 You can order AstroPixels boards here:
 
-https://shop.we-make-things.co.uk/index.php?route=product/product&product_id=56
+https://we-make-things.co.uk/product/astropixels/
 
 # Web Based Installer
 
