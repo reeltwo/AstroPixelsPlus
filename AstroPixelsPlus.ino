@@ -1094,7 +1094,12 @@ void mainLoop()
 
     if (Serial.available())
     {
+
         int ch = Serial.read();
+        if (preferences.getBool(PREFERENCE_MARCSERIAL_PASS, MARC_SERIAL_PASS))
+        {
+            COMMAND_SERIAL.write(ch); // send it out COMMAND_SERIAL
+        }
         if (ch == 0x0A || ch == 0x0D)
         {
             Marcduino::processCommand(player, sBuffer);
