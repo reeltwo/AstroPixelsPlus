@@ -40,9 +40,9 @@
 #define REMOTE_ENABLED true // default disabled
 #define WIFI_ENABLED true   // default enabled
 // Set these to your desired WiFi credentials.
-#define WIFI_AP_NAME "wonderland250"
-#define WIFI_AP_PASSPHRASE "erasure13579"
-#define WIFI_ACCESS_POINT false /* true if access point: false if joining existing wifi */
+#define WIFI_AP_NAME "Astro"
+#define WIFI_AP_PASSPHRASE "astrotech"
+#define WIFI_ACCESS_POINT true /* true if access point: false if joining existing wifi */
 #endif
 
 // SMQ device name for ESPNOW
