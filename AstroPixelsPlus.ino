@@ -40,8 +40,8 @@
 #define REMOTE_ENABLED true // default disabled
 #define WIFI_ENABLED true   // default enabled
 // Set these to your desired WiFi credentials.
-#define WIFI_AP_NAME "Astro"
-#define WIFI_AP_PASSPHRASE "astrotech"
+#define WIFI_AP_NAME "AstroPixels"
+#define WIFI_AP_PASSPHRASE "Astromech"
 #define WIFI_ACCESS_POINT true /* true if access point: false if joining existing wifi */
 #endif
 
