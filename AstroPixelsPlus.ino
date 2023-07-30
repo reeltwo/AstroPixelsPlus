@@ -40,9 +40,9 @@
 #define REMOTE_ENABLED true // default disabled
 #define WIFI_ENABLED true   // default enabled
 // Set these to your desired WiFi credentials.
-#define WIFI_AP_NAME "AstroPixels"
-#define WIFI_AP_PASSPHRASE "Astromech"
-#define WIFI_ACCESS_POINT true /* true if access point: false if joining existing wifi */
+#define WIFI_AP_NAME "wonderland250"
+#define WIFI_AP_PASSPHRASE "erasure13579"
+#define WIFI_ACCESS_POINT false /* true if access point: false if joining existing wifi */
 #endif
 
 // SMQ device name for ESPNOW
@@ -1096,10 +1096,12 @@ void mainLoop()
     {
 
         int ch = Serial.read();
+        // ================================================================
         if (preferences.getBool(PREFERENCE_MARCSERIAL_PASS, MARC_SERIAL_PASS))
         {
             COMMAND_SERIAL.write(ch); // send it out COMMAND_SERIAL
         }
+        // ================================================================
         if (ch == 0x0A || ch == 0x0D)
         {
             Marcduino::processCommand(player, sBuffer);
