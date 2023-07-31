@@ -135,7 +135,7 @@
 
 ////////////////////////////////
 
-#define MARC_SERIAL2_BAUD_RATE 9600
+#define MARC_SERIAL2_BAUD_RATE 2400
 #define MARC_SERIAL_PASS true
 #define MARC_SERIAL_ENABLED true
 #define MARC_WIFI_ENABLED true
