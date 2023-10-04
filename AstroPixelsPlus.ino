@@ -1,18 +1,18 @@
 /**
- * 
+ *
  * AstroPixelsPlus sketch operates as a I2C master that can optionally be connected to one or more
  * Adafruit PCA9685 servo controllers to control dome panels. The sketch also provides serial commands
  * on Serial2.
- * 
+ *
  */
 
 // Support for RSeries Logic Engine FLD and/or RLD lights (requires FastLED library)
 // Define USE_RSERIES_FLD to enable support for RSeries FLD
-//#define USE_RSERIES_FLD
+// #define USE_RSERIES_FLD
 // Define USE_RSERIES_RLD to enable support for RSeries RLD
-//#define USE_RSERIES_RLD
+// #define USE_RSERIES_RLD
 // Define USE_RSERIES_RLD_CURVED to enable support for RSeries RLD curved (AUX5 becomes clock pin)
-//#define USE_RSERIES_RLD_CURVED
+// #define USE_RSERIES_RLD_CURVED
 
 #if defined(USE_RSERIES_FLD) || defined(USE_RSERIES_RLD) || defined(USE_RSERIES_RLD_CURVED)
 // RSeries logics require FastLED
@@ -20,34 +20,34 @@
 #endif
 
 // Define USE_I2C_ADDRESS to enable slave mode. This will disable servo support
-//#define USE_I2C_ADDRESS 0x0a
-#define USE_DEBUG                     // Define to enable debug diagnostic
-#define USE_WIFI                      // Define to enable Wifi support
+// #define USE_I2C_ADDRESS 0x0a
+#define USE_DEBUG // Define to enable debug diagnostic
+#define USE_WIFI  // Define to enable Wifi support
 #define USE_SPIFFS
 #ifdef USE_WIFI
-#define USE_DROID_REMOTE              // Define for droid remote support
+#define USE_DROID_REMOTE // Define for droid remote support
 #define USE_MDNS
 #define USE_OTA
 #define USE_WIFI_WEB
 #define USE_WIFI_MARCDUINO
-//#define LIVE_STREAM
+// #define LIVE_STREAM
 #endif
 
 ////////////////////////////////
 
 // Replace with your network credentials
 #ifdef USE_WIFI
-#define REMOTE_ENABLED       true     // default disabled
-#define WIFI_ENABLED         true     // default enabled
+#define REMOTE_ENABLED true // default disabled
+#define WIFI_ENABLED true   // default enabled
 // Set these to your desired WiFi credentials.
-#define WIFI_AP_NAME         "AstroPixels"
-#define WIFI_AP_PASSPHRASE   "Astromech"
-#define WIFI_ACCESS_POINT    true  /* true if access point: false if joining existing wifi */
+#define WIFI_AP_NAME "AstroPixels"
+#define WIFI_AP_PASSPHRASE "Astromech"
+#define WIFI_ACCESS_POINT true /* true if access point: false if joining existing wifi */
 #endif
 
 // SMQ device name for ESPNOW
-#define SMQ_HOSTNAME         "Astro"
-#define SMQ_SECRET           "Astromech"
+#define SMQ_HOSTNAME "Astro"
+#define SMQ_SECRET "Astromech"
 
 ///////////////////////////////////
 
@@ -61,41 +61,41 @@
 
 ////////////////////////////////
 
-#define PREFERENCE_REMOTE_ENABLED       "remote"
-#define PREFERENCE_REMOTE_HOSTNAME      "rhost"
-#define PREFERENCE_REMOTE_SECRET        "rsecret"
-#define PREFERENCE_REMOTE_PAIRED        "rpaired"
-#define PREFERENCE_REMOTE_LMK           "rlmk"
+#define PREFERENCE_REMOTE_ENABLED "remote"
+#define PREFERENCE_REMOTE_HOSTNAME "rhost"
+#define PREFERENCE_REMOTE_SECRET "rsecret"
+#define PREFERENCE_REMOTE_PAIRED "rpaired"
+#define PREFERENCE_REMOTE_LMK "rlmk"
 
-#define PREFERENCE_WIFI_ENABLED         "wifi"
-#define PREFERENCE_WIFI_SSID            "ssid"
-#define PREFERENCE_WIFI_PASS            "pass"
-#define PREFERENCE_WIFI_AP              "ap"
+#define PREFERENCE_WIFI_ENABLED "wifi"
+#define PREFERENCE_WIFI_SSID "ssid"
+#define PREFERENCE_WIFI_PASS "pass"
+#define PREFERENCE_WIFI_AP "ap"
 
-#define PREFERENCE_MARCSERIAL1          "mserial1"
-#define PREFERENCE_MARCSERIAL2          "mserial2"
-#define PREFERENCE_MARCSERIAL_PASS      "mserialpass"
-#define PREFERENCE_MARCSERIAL_ENABLED   "mserial"
+#define PREFERENCE_MARCSERIAL1 "mserial1"
+#define PREFERENCE_MARCSERIAL2 "mserial2"
+#define PREFERENCE_MARCSERIAL_PASS "mserialpass"
+#define PREFERENCE_MARCSERIAL_ENABLED "mserial"
 
-#define PREFERENCE_MARCWIFI_ENABLED     "mwifi"
+#define PREFERENCE_MARCWIFI_ENABLED "mwifi"
 #define PREFERENCE_MARCWIFI_SERIAL_PASS "mwifipass"
 
-#define PREFERENCE_MARCSOUND            "msound"
-#define PREFERENCE_MARCSOUND_SERIAL     "msoundser"
-#define PREFERENCE_MARCSOUND_VOLUME     "mvolume"
-#define PREFERENCE_MARCSOUND_STARTUP    "msoundstart"
-#define PREFERENCE_MARCSOUND_RANDOM     "mrandom"
+#define PREFERENCE_MARCSOUND "msound"
+#define PREFERENCE_MARCSOUND_SERIAL "msoundser"
+#define PREFERENCE_MARCSOUND_VOLUME "mvolume"
+#define PREFERENCE_MARCSOUND_STARTUP "msoundstart"
+#define PREFERENCE_MARCSOUND_RANDOM "mrandom"
 #define PREFERENCE_MARCSOUND_RANDOM_MIN "mrandommin"
 #define PREFERENCE_MARCSOUND_RANDOM_MAX "mrandommax"
 
 ////////////////////////////////
 
-#define CONSOLE_BUFFER_SIZE     300
+#define CONSOLE_BUFFER_SIZE 300
 
 ////////////////////////////////
 
 #if defined(USE_LCD_SCREEN) || defined(USE_DROID_REMOTE)
-#define USE_MENUS                     // Define if using menu system
+#define USE_MENUS // Define if using menu system
 #endif
 
 ////////////////////////////////
@@ -135,18 +135,18 @@
 
 ////////////////////////////////
 
-#define MARC_SERIAL2_BAUD_RATE          2400
-#define MARC_SERIAL_PASS                true
-#define MARC_SERIAL_ENABLED             true
-#define MARC_WIFI_ENABLED               true
-#define MARC_WIFI_SERIAL_PASS           true
-#define MARC_SOUND_PLAYER               MarcSound::kDisabled
-#define MARC_SOUND_SERIAL               0
-#define MARC_SOUND_VOLUME               500  // 0 - 1000
-#define MARC_SOUND_STARTUP              255
-#define MARC_SOUND_RANDOM               true
-#define MARC_SOUND_RANDOM_MIN           5000
-#define MARC_SOUND_RANDOM_MAX           30000
+#define MARC_SERIAL2_BAUD_RATE 2400
+#define MARC_SERIAL_PASS true
+#define MARC_SERIAL_ENABLED true
+#define MARC_WIFI_ENABLED true
+#define MARC_WIFI_SERIAL_PASS true
+#define MARC_SOUND_PLAYER MarcSound::kDisabled
+#define MARC_SOUND_SERIAL 0
+#define MARC_SOUND_VOLUME 500 // 0 - 1000
+#define MARC_SOUND_STARTUP 255
+#define MARC_SOUND_RANDOM true
+#define MARC_SOUND_RANDOM_MIN 5000
+#define MARC_SOUND_RANDOM_MAX 30000
 
 #include "wifi/WifiAccess.h"
 
@@ -195,19 +195,19 @@
 
 #ifdef USE_RSERIES_RLD_CURVED
 // Define RSeries RLD clock pin to be AUX5 (could just as well be AUX1, AUX2, AUX3, or AUX4)
-#define PIN_REAR_LOGIC_CLOCK  PIN_AUX5
+#define PIN_REAR_LOGIC_CLOCK PIN_AUX5
 #endif
 
-#define CBI_DATAIN_PIN      PIN_AUX3
-#define CBI_CLOCK_PIN       PIN_AUX2
-#define CBI_LOAD_PIN        PIN_AUX1
+#define CBI_DATAIN_PIN PIN_AUX3
+#define CBI_CLOCK_PIN PIN_AUX2
+#define CBI_LOAD_PIN PIN_AUX1
 
 ////////////////////////////////
 
 #define SOUND_SERIAL Serial1
 #define SOUND_RX_PIN PIN_AUX4
 #define SOUND_TX_PIN PIN_AUX5
-#define SOUND_BAUD   9600
+#define SOUND_BAUD 9600
 
 ////////////////////////////////
 
@@ -238,12 +238,12 @@ HoloLights rearHolo(PIN_REAR_HOLO, HoloLights::kRGB, 2);
 HoloLights topHolo(PIN_TOP_HOLO, HoloLights::kRGB, 3);
 #endif
 
-//#if USE_FIRESTRIP_TEMPLATE
-// FireStrip<PIN_AUX4> fireStrip;
-//#else
-// FireStrip fireStrip(PIN_AUX4);
-//#endif
-// BadMotivator badMotivator(PIN_AUX5);
+// #if USE_FIRESTRIP_TEMPLATE
+//  FireStrip<PIN_AUX4> fireStrip;
+// #else
+//  FireStrip fireStrip(PIN_AUX4);
+// #endif
+//  BadMotivator badMotivator(PIN_AUX5);
 
 // LedControlMAX7221<5> ledChain1(CBI_DATAIN_PIN, CBI_CLOCK_PIN, CBI_LOAD_PIN);
 // ChargeBayIndicator chargeBayIndicator(ledChain1);
@@ -254,59 +254,59 @@ HoloLights topHolo(PIN_TOP_HOLO, HoloLights::kRGB, 3);
 
 ////////////////////////////////
 
-#define SMALL_PANEL         0x0001
-#define MEDIUM_PANEL        0x0002
-#define BIG_PANEL           0x0004
-#define PIE_PANEL           0x0008
-#define TOP_PIE_PANEL       0x0010
-#define MINI_PANEL          0x0020
+#define SMALL_PANEL 0x0001
+#define MEDIUM_PANEL 0x0002
+#define BIG_PANEL 0x0004
+#define PIE_PANEL 0x0008
+#define TOP_PIE_PANEL 0x0010
+#define MINI_PANEL 0x0020
 
-#define HOLO_HSERVO         0x1000
-#define HOLO_VSERVO         0x2000
+#define HOLO_HSERVO 0x1000
+#define HOLO_VSERVO 0x2000
 
-#define DOME_PANELS_MASK        (SMALL_PANEL|MEDIUM_PANEL|BIG_PANEL)
-#define PIE_PANELS_MASK         (PIE_PANEL)
-#define ALL_DOME_PANELS_MASK    (MINI_PANEL|DOME_PANELS_MASK|PIE_PANELS_MASK|TOP_PIE_PANEL)
-#define DOME_DANCE_PANELS_MASK  (DOME_PANELS_MASK|PIE_PANELS_MASK)
-#define HOLO_SERVOS_MASK        (HOLO_HSERVO|HOLO_VSERVO)
+#define DOME_PANELS_MASK (SMALL_PANEL | MEDIUM_PANEL | BIG_PANEL)
+#define PIE_PANELS_MASK (PIE_PANEL)
+#define ALL_DOME_PANELS_MASK (MINI_PANEL | DOME_PANELS_MASK | PIE_PANELS_MASK | TOP_PIE_PANEL)
+#define DOME_DANCE_PANELS_MASK (DOME_PANELS_MASK | PIE_PANELS_MASK)
+#define HOLO_SERVOS_MASK (HOLO_HSERVO | HOLO_VSERVO)
 
-#define PANEL_GROUP_1      (1L<<14)
-#define PANEL_GROUP_2      (1L<<15)
-#define PANEL_GROUP_3      (1L<<16)
-#define PANEL_GROUP_4      (1L<<17)
-#define PANEL_GROUP_5      (1L<<18)
-#define PANEL_GROUP_6      (1L<<19)
-#define PANEL_GROUP_7      (1L<<20)
-#define PANEL_GROUP_8      (1L<<21)
-#define PANEL_GROUP_9      (1L<<22)
-#define PANEL_GROUP_10     (1L<<23)
+#define PANEL_GROUP_1 (1L << 14)
+#define PANEL_GROUP_2 (1L << 15)
+#define PANEL_GROUP_3 (1L << 16)
+#define PANEL_GROUP_4 (1L << 17)
+#define PANEL_GROUP_5 (1L << 18)
+#define PANEL_GROUP_6 (1L << 19)
+#define PANEL_GROUP_7 (1L << 20)
+#define PANEL_GROUP_8 (1L << 21)
+#define PANEL_GROUP_9 (1L << 22)
+#define PANEL_GROUP_10 (1L << 23)
 
 ////////////////////////////////
 // These values will be configurable through the WiFi interface and stored in the preferences.
 const ServoSettings servoSettings[] PROGMEM = {
 #ifndef USE_I2C_ADDRESS
     // First PCA9685 controller
-    { 1,  800, 2200, PANEL_GROUP_4|SMALL_PANEL },  /* 0: door 4 */
-    { 2,  800, 2200, PANEL_GROUP_3|SMALL_PANEL },  /* 1: door 3 */
-    { 3,  800, 2200,  PANEL_GROUP_2|SMALL_PANEL }, /* 2: door 2 */
-    { 4,  800, 2200, PANEL_GROUP_1|SMALL_PANEL },  /* 3: door 1 */
-    { 5,  800, 2200, PANEL_GROUP_5|MEDIUM_PANEL }, /* 4: door 5 */
-    { 6,  800, 2200, PANEL_GROUP_6|BIG_PANEL },    /* 5: door 9 */
-    { 7,  800, 2200, MINI_PANEL },                 /* 6: mini door 2 */
-    { 8,  800, 2200, MINI_PANEL },                 /* 7: mini front psi door */
-    { 9,  800, 2200, PANEL_GROUP_10|PIE_PANEL },   /* 8: pie panel 1 */
-    { 10, 800, 2200, PANEL_GROUP_9|PIE_PANEL },    /* 9: pie panel 2 */
-    { 11, 800, 2200, PANEL_GROUP_8|PIE_PANEL },    /* 10: pie panel 3 */
-    { 12, 800, 2200, PANEL_GROUP_7|PIE_PANEL },    /* 11: pie panel 4 */
-    { 13, 800, 2200, TOP_PIE_PANEL },              /* 12: dome top panel */
+    {1, 800, 2200, PANEL_GROUP_4 | SMALL_PANEL},  /* 0: door 4 */
+    {2, 800, 2200, PANEL_GROUP_3 | SMALL_PANEL},  /* 1: door 3 */
+    {3, 800, 2200, PANEL_GROUP_2 | SMALL_PANEL},  /* 2: door 2 */
+    {4, 800, 2200, PANEL_GROUP_1 | SMALL_PANEL},  /* 3: door 1 */
+    {5, 800, 2200, PANEL_GROUP_5 | MEDIUM_PANEL}, /* 4: door 5 */
+    {6, 800, 2200, PANEL_GROUP_6 | BIG_PANEL},    /* 5: door 9 */
+    {7, 800, 2200, MINI_PANEL},                   /* 6: mini door 2 */
+    {8, 800, 2200, MINI_PANEL},                   /* 7: mini front psi door */
+    {9, 800, 2200, PANEL_GROUP_10 | PIE_PANEL},   /* 8: pie panel 1 */
+    {10, 800, 2200, PANEL_GROUP_9 | PIE_PANEL},   /* 9: pie panel 2 */
+    {11, 800, 2200, PANEL_GROUP_8 | PIE_PANEL},   /* 10: pie panel 3 */
+    {12, 800, 2200, PANEL_GROUP_7 | PIE_PANEL},   /* 11: pie panel 4 */
+    {13, 800, 2200, TOP_PIE_PANEL},               /* 12: dome top panel */
 
     // Second PCA9685 controller
-    { 16, 800, 2200, HOLO_HSERVO },                /* 13: horizontal front holo */
-    { 17, 800, 2200, HOLO_VSERVO },                /* 14: vertical front holo */
-    { 18, 800, 2200, HOLO_HSERVO },                /* 15: horizontal top holo */
-    { 19, 800, 2200, HOLO_VSERVO },                /* 16: vertical top holo */
-    { 20, 800, 2200, HOLO_VSERVO },                /* 17: vertical rear holo */
-    { 21, 800, 2200, HOLO_HSERVO },                /* 18: horizontal rear holo */
+    {16, 800, 2200, HOLO_HSERVO}, /* 13: horizontal front holo */
+    {17, 800, 2200, HOLO_VSERVO}, /* 14: vertical front holo */
+    {18, 800, 2200, HOLO_HSERVO}, /* 15: horizontal top holo */
+    {19, 800, 2200, HOLO_VSERVO}, /* 16: vertical top holo */
+    {20, 800, 2200, HOLO_VSERVO}, /* 17: vertical rear holo */
+    {21, 800, 2200, HOLO_HSERVO}, /* 18: horizontal rear holo */
 #endif
 };
 
@@ -326,7 +326,7 @@ MarcSound::Module sSoundPlayer;
 
 /////////////////////////////////////////////////////////////////////////
 
-#define NUM_LEDS 28*4
+#define NUM_LEDS 28 * 4
 uint32_t lastEvent;
 CRGB leds[NUM_LEDS];
 #ifdef LIVE_STREAM
@@ -357,11 +357,10 @@ LogicEffect CustomLogicEffectSelector(unsigned selectSequence)
         LogicEffectPlasma,
         LogicEffectMetaBalls,
         LogicEffectFractal,
-        LogicEffectFadeAndScroll
-    };
-    if (selectSequence >= 100 && selectSequence-100 <= SizeOfArray(sCustomLogicEffects))
+        LogicEffectFadeAndScroll};
+    if (selectSequence >= 100 && selectSequence - 100 <= SizeOfArray(sCustomLogicEffects))
     {
-        return LogicEffect(sCustomLogicEffects[selectSequence-100]);
+        return LogicEffect(sCustomLogicEffects[selectSequence - 100]);
     }
     return LogicEffectDefaultSelector(selectSequence);
 }
@@ -406,18 +405,18 @@ void reboot()
 void resetSequence()
 {
     Marcduino::send(F("$s"));
-    CommandEvent::process(F( 
-        "LE000000|0\n"   // LogicEngine devices to normal
-        "FSOFF\n"        // Fire Stripe Off
-        "BMOFF\n"        // Bad Motiviator Off
-        "HPA000|0\n"     // Holo Projectors to Normal
-        "CB00000\n"      // Charge Bay to Normal
-        "DP00000\n"));   // Data Panel to Normal
+    CommandEvent::process(F(
+        "LE000000|0\n" // LogicEngine devices to normal
+        "FSOFF\n"      // Fire Stripe Off
+        "BMOFF\n"      // Bad Motiviator Off
+        "HPA000|0\n"   // Holo Projectors to Normal
+        "CB00000\n"    // Charge Bay to Normal
+        "DP00000\n")); // Data Panel to Normal
 }
 
 ////////////////////////////////
 
-int32_t strtol(const char* cmd, const char** endptr)
+int32_t strtol(const char *cmd, const char **endptr)
 {
     bool sign = false;
     int32_t result = 0;
@@ -428,7 +427,7 @@ int32_t strtol(const char* cmd, const char** endptr)
     }
     while (isdigit(*cmd))
     {
-        result = result*10L + (*cmd-'0');
+        result = result * 10L + (*cmd - '0');
         cmd++;
     }
     *endptr = cmd;
@@ -437,7 +436,7 @@ int32_t strtol(const char* cmd, const char** endptr)
 
 ////////////////////////////////
 
-bool numberparams(const char* cmd, uint8_t &argcount, int32_t* args, uint8_t maxcount)
+bool numberparams(const char *cmd, uint8_t &argcount, int32_t *args, uint8_t maxcount)
 {
     for (argcount = 0; argcount < maxcount; argcount++)
     {
@@ -669,10 +668,10 @@ void setup()
 #ifdef USE_WIFI
     if (remoteEnabled)
     {
-    #ifdef USE_SMQ
+#ifdef USE_SMQ
         WiFi.mode(WIFI_MODE_APSTA);
         if (SMQ::init(preferences.getString(PREFERENCE_REMOTE_HOSTNAME, SMQ_HOSTNAME),
-                        preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_SECRET)))
+                      preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_SECRET)))
         {
             SMQLMK key;
             if (preferences.getBytes(PREFERENCE_REMOTE_LMK, &key, sizeof(SMQLMK)) == sizeof(SMQLMK))
@@ -684,7 +683,8 @@ void setup()
             size_t pairedHostsSize = preferences.getBytesLength(PREFERENCE_REMOTE_PAIRED);
             unsigned numHosts = pairedHostsSize / sizeof(pairedHosts[0]);
             printf("numHosts: %d\n", numHosts);
-            Serial.print("WiFi.macAddress() : "); Serial.println(WiFi.macAddress());
+            Serial.print("WiFi.macAddress() : ");
+            Serial.println(WiFi.macAddress());
             if (numHosts != 0)
             {
                 if (preferences.getBytes(PREFERENCE_REMOTE_PAIRED, pairedHosts, pairedHostsSize) == pairedHostsSize)
@@ -693,9 +693,10 @@ void setup()
                 }
             }
             printf("Droid Remote Enabled %s:%s\n",
-                preferences.getString(PREFERENCE_REMOTE_HOSTNAME, SMQ_HOSTNAME).c_str(),
-                    preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_SECRET).c_str());
-            SMQ::setHostPairingCallback([](SMQHost* host) {
+                   preferences.getString(PREFERENCE_REMOTE_HOSTNAME, SMQ_HOSTNAME).c_str(),
+                   preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_SECRET).c_str());
+            SMQ::setHostPairingCallback([](SMQHost *host)
+                                        {
                 if (host == nullptr)
                 {
                     printf("Pairing timed out\n");
@@ -733,80 +734,82 @@ void setup()
                     }
                     printf("Pairing Stopped\n");
                     SMQ::stopPairing();
-                }
-            });
+                } });
 
-            SMQ::setHostDiscoveryCallback([](SMQHost* host) {
+            SMQ::setHostDiscoveryCallback([](SMQHost *host)
+                                          {
                 if (host->hasTopic("LCD"))
                 {
                     printf("Remote Discovered: %s\n", host->getHostName().c_str());
-                }
-            });
+                } });
 
-            SMQ::setHostLostCallback([](SMQHost* host) {
+            SMQ::setHostLostCallback([](SMQHost *host)
+                                     {
                 printf("Lost: %s [%s] [%s]\n", host->getHostName().c_str(), host->getHostAddress().c_str(),
                     sRemoteAddress.toString().c_str());
                 if (sRemoteAddress.equals(host->fAddr.fData))
                 {
                     printf("DISABLING REMOTE\n");
                     sDisplay.setEnabled(false);
-                }
-            });
+                } });
         }
         else
         {
             printf("Failed to activate Droid Remote\n");
         }
-    #endif
+#endif
     }
     if (wifiEnabled)
     {
-    #ifdef USE_WIFI_WEB
+#ifdef USE_WIFI_WEB
         // In preparation for adding WiFi settings web page
         wifiAccess.setNetworkCredentials(
             preferences.getString(PREFERENCE_WIFI_SSID, WIFI_AP_NAME),
             preferences.getString(PREFERENCE_WIFI_PASS, WIFI_AP_PASSPHRASE),
             preferences.getBool(PREFERENCE_WIFI_AP, WIFI_ACCESS_POINT),
             preferences.getBool(PREFERENCE_WIFI_ENABLED, WIFI_ENABLED));
-    #ifdef USE_WIFI_MARCDUINO
+#ifdef USE_WIFI_MARCDUINO
         wifiMarcduinoReceiver.setEnabled(preferences.getBool(PREFERENCE_MARCWIFI_ENABLED, MARC_WIFI_ENABLED));
         if (wifiMarcduinoReceiver.enabled())
         {
-            wifiMarcduinoReceiver.setCommandHandler([](const char* cmd) {
+            wifiMarcduinoReceiver.setCommandHandler([](const char *cmd)
+                                                    {
                 printf("cmd: %s\n", cmd);
                 Marcduino::processCommand(player, cmd);
                 if (preferences.getBool(PREFERENCE_MARCWIFI_SERIAL_PASS, MARC_WIFI_SERIAL_PASS))
                 {
                     COMMAND_SERIAL.print(cmd); COMMAND_SERIAL.print('\r');
-                }
-            });
+                } });
         }
-    #endif
-        wifiAccess.notifyWifiConnected([](WifiAccess &wifi) {
-            Serial.print("Connect to http://"); Serial.println(wifi.getIPAddress());
-        #ifdef USE_MDNS
-            // No point in setting up mDNS if R2 is the access point
-            if (!wifi.isSoftAP())
-            {
-                String mac = wifi.getMacAddress();
-                String hostName = mac.substring(mac.length()-5, mac.length());
-                hostName.remove(2, 1);
-                hostName = String(WIFI_AP_NAME)+String("-")+hostName;
-                if (webServer.enabled())
-                {
-                    Serial.print("Host name: "); Serial.println(hostName);
-                    if (!MDNS.begin(hostName.c_str()))
-                    {
-                        DEBUG_PRINTLN("Error setting up MDNS responder!");
-                    }
-                }
-            }
-        #endif
-        });
-    #endif
-    #ifdef USE_OTA
+#endif
+        wifiAccess.notifyWifiConnected([](WifiAccess &wifi)
+                                       {
+                                           Serial.print("Connect to http://");
+                                           Serial.println(wifi.getIPAddress());
+#ifdef USE_MDNS
+                                           // No point in setting up mDNS if R2 is the access point
+                                           if (!wifi.isSoftAP())
+                                           {
+                                               String mac = wifi.getMacAddress();
+                                               String hostName = mac.substring(mac.length() - 5, mac.length());
+                                               hostName.remove(2, 1);
+                                               hostName = String(WIFI_AP_NAME) + String("-") + hostName;
+                                               if (webServer.enabled())
+                                               {
+                                                   Serial.print("Host name: ");
+                                                   Serial.println(hostName);
+                                                   if (!MDNS.begin(hostName.c_str()))
+                                                   {
+                                                       DEBUG_PRINTLN("Error setting up MDNS responder!");
+                                                   }
+                                               }
+                                           }
+#endif
+                                       });
+#endif
+#ifdef USE_OTA
         ArduinoOTA.onStart([]()
-        {
+                           {
             String type;
             if (ArduinoOTA.getCommand() == U_FLASH)
             {
@@ -816,18 +819,15 @@ void setup()
             {
                 type = "filesystem";
             }
-            DEBUG_PRINTLN("OTA START");
-        })
-        .onEnd([]()
-        {
-            DEBUG_PRINTLN("OTA END");
-        })
-        .onProgress([](unsigned int progress, unsigned int total)
-        {
-            // float range = (float)progress / (float)total;
-        })
-        .onError([](ota_error_t error)
-        {
+            DEBUG_PRINTLN("OTA START"); })
+            .onEnd([]()
+                   { DEBUG_PRINTLN("OTA END"); })
+            .onProgress([](unsigned int progress, unsigned int total)
+                        {
+                            // float range = (float)progress / (float)total;
+                        })
+            .onError([](ota_error_t error)
+                     {
             String desc;
             if (error == OTA_AUTH_ERROR) desc = "Auth Failed";
             else if (error == OTA_BEGIN_ERROR) desc = "Begin Failed";
@@ -835,17 +835,17 @@ void setup()
             else if (error == OTA_RECEIVE_ERROR) desc = "Receive Failed";
             else if (error == OTA_END_ERROR) desc = "End Failed";
             else desc = "Error: "+String(error);
-            DEBUG_PRINTLN(desc);
-        });
-    #endif
+            DEBUG_PRINTLN(desc); });
+#endif
     }
 #endif
 #ifdef USE_WIFI_WEB
     // For safety we will stop the motors if the web client is connected
-    webServer.setConnect([]() {
-        // Callback for each connected web client
-        // DEBUG_PRINTLN("Hello");
-    });
+    webServer.setConnect([]()
+                         {
+                             // Callback for each connected web client
+                             // DEBUG_PRINTLN("Hello");
+                         });
 #endif
 
     RLD.setLogicEffectSelector(CustomLogicEffectSelector);
@@ -855,13 +855,13 @@ void setup()
 
 #ifdef USE_WIFI
     xTaskCreatePinnedToCore(
-          eventLoopTask,
-          "Events",
-          10000,    // shrink stack size?
-          NULL,
-          1,
-          &eventTask,
-          0);
+        eventLoopTask,
+        "Events",
+        10000, // shrink stack size?
+        NULL,
+        1,
+        &eventTask,
+        0);
 #endif
     DEBUG_PRINTLN("Ready");
     sMarcSound.playStartSound();
@@ -874,145 +874,145 @@ void setup()
 ////////////////
 
 MARCDUINO_ACTION(DirectCommand, ~RT, ({
-    // Direct ReelTwo command
-    CommandEvent::process(Marcduino::getCommand());
-}))
+                     // Direct ReelTwo command
+                     CommandEvent::process(Marcduino::getCommand());
+                 }))
 
 ////////////////
 
 MARCDUINO_ACTION(MDDirectCommand, @AP, ({
-    // Direct ReelTwo command
-    CommandEvent::process(Marcduino::getCommand());
-}))
+                     // Direct ReelTwo command
+                     CommandEvent::process(Marcduino::getCommand());
+                 }))
 
 ////////////////
 
 MARCDUINO_ACTION(WifiToggle, #APWIFI, ({
 #ifdef USE_WIFI
-    bool wifiSetting = wifiEnabled;
-    switch (*Marcduino::getCommand())
-    {
-        case '0':
-            wifiSetting = false;
-            break;
-        case '1':
-            wifiSetting = true;
-            break;
-        case '\0':
-            // Toggle WiFi
-            wifiSetting = !wifiSetting;
-            break;
-    }
-    if (wifiEnabled != wifiSetting)
-    {
-        if (wifiSetting)
-        {
-            preferences.putBool(PREFERENCE_WIFI_ENABLED, true);
-            DEBUG_PRINTLN("WiFi Enabled");
-        }
-        else
-        {
-            preferences.putBool(PREFERENCE_WIFI_ENABLED, false);
-            DEBUG_PRINTLN("WiFi Disabled");
-        }
-        reboot();
-    }
+                     bool wifiSetting = wifiEnabled;
+                     switch (*Marcduino::getCommand())
+                     {
+                     case '0':
+                         wifiSetting = false;
+                         break;
+                     case '1':
+                         wifiSetting = true;
+                         break;
+                     case '\0':
+                         // Toggle WiFi
+                         wifiSetting = !wifiSetting;
+                         break;
+                     }
+                     if (wifiEnabled != wifiSetting)
+                     {
+                         if (wifiSetting)
+                         {
+                             preferences.putBool(PREFERENCE_WIFI_ENABLED, true);
+                             DEBUG_PRINTLN("WiFi Enabled");
+                         }
+                         else
+                         {
+                             preferences.putBool(PREFERENCE_WIFI_ENABLED, false);
+                             DEBUG_PRINTLN("WiFi Disabled");
+                         }
+                         reboot();
+                     }
 #endif
-}))
+                 }))
 
 ////////////////
 
 MARCDUINO_ACTION(RemoteToggle, #APREMOTE, ({
 #ifdef USE_DROID_REMOTE
-    bool remoteSetting = remoteEnabled;
-    switch (*Marcduino::getCommand())
-    {
-        case '0':
-            remoteSetting = false;
-            break;
-        case '1':
-            remoteSetting = true;
-            break;
-        case '\0':
-            // Toggle remote
-            remoteSetting = !remoteSetting;
-            break;
-    }
-    if (remoteEnabled != remoteSetting)
-    {
-        if (remoteSetting)
-        {
-            preferences.putBool(PREFERENCE_REMOTE_ENABLED, true);
-            DEBUG_PRINTLN("Remote Enabled");
-        }
-        else
-        {
-            preferences.putBool(PREFERENCE_REMOTE_ENABLED, false);
-            DEBUG_PRINTLN("Remote Disabled");
-        }
-        reboot();
-    }
+                     bool remoteSetting = remoteEnabled;
+                     switch (*Marcduino::getCommand())
+                     {
+                     case '0':
+                         remoteSetting = false;
+                         break;
+                     case '1':
+                         remoteSetting = true;
+                         break;
+                     case '\0':
+                         // Toggle remote
+                         remoteSetting = !remoteSetting;
+                         break;
+                     }
+                     if (remoteEnabled != remoteSetting)
+                     {
+                         if (remoteSetting)
+                         {
+                             preferences.putBool(PREFERENCE_REMOTE_ENABLED, true);
+                             DEBUG_PRINTLN("Remote Enabled");
+                         }
+                         else
+                         {
+                             preferences.putBool(PREFERENCE_REMOTE_ENABLED, false);
+                             DEBUG_PRINTLN("Remote Disabled");
+                         }
+                         reboot();
+                     }
 #endif
-}))
+                 }))
 
 ////////////////
 
 MARCDUINO_ACTION(RemoteName, #APRNAME, ({
-    String newSecret = String(Marcduino::getCommand());
-    if (preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_HOSTNAME) != newSecret)
-    {
-        preferences.putString(PREFERENCE_REMOTE_SECRET, newSecret);
-        printf("Changed.\n");
-        reboot();
-    }
-}))
+                     String newSecret = String(Marcduino::getCommand());
+                     if (preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_HOSTNAME) != newSecret)
+                     {
+                         preferences.putString(PREFERENCE_REMOTE_SECRET, newSecret);
+                         printf("Changed.\n");
+                         reboot();
+                     }
+                 }))
 
 ////////////////
 
 MARCDUINO_ACTION(RemoteSecret, #APRSECRET, ({
-    String newSecret = String(Marcduino::getCommand());
-    if (preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_HOSTNAME) != newSecret)
-    {
-        preferences.putString(PREFERENCE_REMOTE_SECRET, newSecret);
-        printf("Changed.\n");
-        reboot();
-    }
-}))
+                     String newSecret = String(Marcduino::getCommand());
+                     if (preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_HOSTNAME) != newSecret)
+                     {
+                         preferences.putString(PREFERENCE_REMOTE_SECRET, newSecret);
+                         printf("Changed.\n");
+                         reboot();
+                     }
+                 }))
 
 ////////////////
 
 MARCDUINO_ACTION(RemotePair, #APPAIR, ({
-    printf("Pairing Started ...\n");
-    SMQ::startPairing();
-}))
+                     printf("Pairing Started ...\n");
+                     SMQ::startPairing();
+                 }))
 
 ////////////////
 
 MARCDUINO_ACTION(RemoteUnpair, #APUNPAIR, ({
-    if (preferences.remove(PREFERENCE_REMOTE_PAIRED))
-    {
-        printf("Unpairing Success...\n");
-        reboot();
-    }
-    else
-    {
-        printf("Not Paired...\n");
-    }
-}))
+                     if (preferences.remove(PREFERENCE_REMOTE_PAIRED))
+                     {
+                         printf("Unpairing Success...\n");
+                         reboot();
+                     }
+                     else
+                     {
+                         printf("Not Paired...\n");
+                     }
+                 }))
 
 ////////////////
 
 MARCDUINO_ACTION(ClearPrefs, #APZERO, ({
-    preferences.clear();
-    DEBUG_PRINT("Clearing preferences. ");
-    reboot();
-}))
+                     preferences.clear();
+                     DEBUG_PRINT("Clearing preferences. ");
+                     reboot();
+                 }))
 
 ////////////////
 
 MARCDUINO_ACTION(Restart, #APRESTART, ({
-    reboot();
-}))
+                     reboot();
+                 }))
 
 ////////////////
 
@@ -1074,12 +1074,12 @@ static char sBuffer[CONSOLE_BUFFER_SIZE];
 ////////////////
 
 #ifdef USE_I2C_ADDRESS
-I2CReceiverBase<CONSOLE_BUFFER_SIZE> i2cReceiver(USE_I2C_ADDRESS, [](char* cmd) {
+I2CReceiverBase<CONSOLE_BUFFER_SIZE> i2cReceiver(USE_I2C_ADDRESS, [](char *cmd)
+                                                 {
     DEBUG_PRINT("[I2C] RECEIVED=\"");
     DEBUG_PRINT(cmd);
     DEBUG_PRINTLN("\"");
-    Marcduino::processCommand(player, cmd);
-});
+    Marcduino::processCommand(player, cmd); });
 #endif
 
 ////////////////
@@ -1094,13 +1094,20 @@ void mainLoop()
 
     if (Serial.available())
     {
+
         int ch = Serial.read();
+        // ================================================================
+        if (preferences.getBool(PREFERENCE_MARCSERIAL_PASS, MARC_SERIAL_PASS))
+        {
+            COMMAND_SERIAL.write(ch); // send it out COMMAND_SERIAL
+        }
+        // ================================================================
         if (ch == 0x0A || ch == 0x0D)
         {
             Marcduino::processCommand(player, sBuffer);
             sPos = 0;
         }
-        else if (sPos < SizeOfArray(sBuffer)-1)
+        else if (sPos < SizeOfArray(sBuffer) - 1)
         {
             sBuffer[sPos++] = ch;
             sBuffer[sPos] = '\0';
@@ -1111,28 +1118,28 @@ void mainLoop()
 ////////////////
 
 #ifdef USE_WIFI
-void eventLoopTask(void* )
+void eventLoopTask(void *)
 {
     for (;;)
     {
         if (wifiActive)
         {
-        #ifdef USE_OTA
+#ifdef USE_OTA
             ArduinoOTA.handle();
-        #endif
-        #ifdef USE_WIFI_WEB
+#endif
+#ifdef USE_WIFI_WEB
             webServer.handle();
-        #endif
+#endif
         }
         if (remoteActive)
         {
-        #ifdef USE_SMQ
+#ifdef USE_SMQ
             SMQ::process();
-        #endif
+#endif
         }
-    #ifdef USE_LVGL_DISPLAY
+#ifdef USE_LVGL_DISPLAY
         statusDisplay.refresh();
-    #endif
+#endif
         vTaskDelay(1);
     }
 }
