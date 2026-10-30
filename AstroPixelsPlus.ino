@@ -358,7 +358,7 @@ LogicEffect CustomLogicEffectSelector(unsigned selectSequence)
         LogicEffectMetaBalls,
         LogicEffectFractal,
         LogicEffectFadeAndScroll};
-    if (selectSequence >= 100 && selectSequence - 100 <= SizeOfArray(sCustomLogicEffects))
+    if (selectSequence >= 100 && selectSequence - 100 < SizeOfArray(sCustomLogicEffects))
     {
         return LogicEffect(sCustomLogicEffects[selectSequence - 100]);
     }
