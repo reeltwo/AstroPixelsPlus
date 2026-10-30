@@ -1,4 +1,4 @@
-/**
+/** 
  *
  * AstroPixelsPlus sketch operates as a I2C master that can optionally be connected to one or more
  * Adafruit PCA9685 servo controllers to control dome panels. The sketch also provides serial commands
@@ -358,7 +358,7 @@ LogicEffect CustomLogicEffectSelector(unsigned selectSequence)
         LogicEffectMetaBalls,
         LogicEffectFractal,
         LogicEffectFadeAndScroll};
-    if (selectSequence >= 100 && selectSequence - 100 <= SizeOfArray(sCustomLogicEffects))
+    if (selectSequence >= 100 && selectSequence - 100 < SizeOfArray(sCustomLogicEffects))
     {
         return LogicEffect(sCustomLogicEffects[selectSequence - 100]);
     }
@@ -958,10 +958,10 @@ MARCDUINO_ACTION(RemoteToggle, #APREMOTE, ({
 ////////////////
 
 MARCDUINO_ACTION(RemoteName, #APRNAME, ({
-                     String newSecret = String(Marcduino::getCommand());
-                     if (preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_HOSTNAME) != newSecret)
+                     String newHost = String(Marcduino::getCommand());
+                     if (preferences.getString(PREFERENCE_REMOTE_HOSTNAME, SMQ_HOSTNAME) != newHost)
                      {
-                         preferences.putString(PREFERENCE_REMOTE_SECRET, newSecret);
+                         preferences.putString(PREFERENCE_REMOTE_HOSTNAME, newHost);
                          printf("Changed.\n");
                          reboot();
                      }
