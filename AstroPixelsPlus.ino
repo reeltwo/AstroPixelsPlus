@@ -958,10 +958,10 @@ MARCDUINO_ACTION(RemoteToggle, #APREMOTE, ({
 ////////////////
 
 MARCDUINO_ACTION(RemoteName, #APRNAME, ({
-                     String newSecret = String(Marcduino::getCommand());
-                     if (preferences.getString(PREFERENCE_REMOTE_SECRET, SMQ_HOSTNAME) != newSecret)
+                     String newHost = String(Marcduino::getCommand());
+                     if (preferences.getString(PREFERENCE_REMOTE_HOSTNAME, SMQ_HOSTNAME) != newHost)
                      {
-                         preferences.putString(PREFERENCE_REMOTE_SECRET, newSecret);
+                         preferences.putString(PREFERENCE_REMOTE_HOSTNAME, newHost);
                          printf("Changed.\n");
                          reboot();
                      }
