@@ -1,4 +1,4 @@
-/**
+/** 
  *
  * AstroPixelsPlus sketch operates as a I2C master that can optionally be connected to one or more
  * Adafruit PCA9685 servo controllers to control dome panels. The sketch also provides serial commands
